@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Intelligence // Cyber security blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="blackcaesar0" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.4566c05e79be04e22fdb60fe026660a374366519139306a7223d2cab6fb660db.css" />
+    
+    <link rel="stylesheet" href="/css/custom.min.5af53ff6a9267e24ee96c3f1312dd379808c5a82b25f008d9e402843955e4f21.css" />
+    
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Intelligence">
+  <meta name="twitter:description" content="Intelligence CTF Write-Up Executive Summary Intelligence contracted blackcaesar0 to perform a network penetration test on its internally facing network. The objective was to identify security weaknesses, determine their impact, and provide remediation recommendations.
+Approach The test was conducted using a black-box approach from January 16, 2025, 10:14 PM, to January 21, 2025, 4:16 AM, without credentials or prior knowledge of the internal environment. The goal was to uncover unknown vulnerabilities while maintaining a non-evasive testing approach.">
+
+    <meta property="og:url" content="https://blackcaesar0.com/hackthebox/intelligence/">
+  <meta property="og:site_name" content="Cyber security blog">
+  <meta property="og:title" content="Intelligence">
+  <meta property="og:description" content="Intelligence CTF Write-Up Executive Summary Intelligence contracted blackcaesar0 to perform a network penetration test on its internally facing network. The objective was to identify security weaknesses, determine their impact, and provide remediation recommendations.
+Approach The test was conducted using a black-box approach from January 16, 2025, 10:14 PM, to January 21, 2025, 4:16 AM, without credentials or prior knowledge of the internal environment. The goal was to uncover unknown vulnerabilities while maintaining a non-evasive testing approach.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="hackthebox">
+    <meta property="article:published_time" content="2025-02-06T06:19:49+01:00">
+    <meta property="article:modified_time" content="2025-02-06T06:19:49+01:00">
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/dragon.png" alt="blackcaesar0" /></a>
+      <span class="app-header-title">blackcaesar0</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/hackthebox/">Hackthebox</a>
+      </nav>
+      <p>Exploring cybersecurity, ethical hacking, and digital forensics—one exploit at a time.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-github" viewBox="0 0 24 24" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-linkedin" viewBox="0 0 24 24" fill="currentColor"><title>LinkedIn</title><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Intelligence</h1>
+      <div class="post-meta">
+        <div>
+          <svg class="icon icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Feb 6, 2025
+        </div>
+        <div>
+          <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>clock</title><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          3 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <hr>
+<h1 id="intelligence-ctf-write-up">Intelligence CTF Write-Up</h1>
+<h2 id="executive-summary">Executive Summary</h2>
+<p>Intelligence contracted <strong>blackcaesar0</strong> to perform a network penetration test on its internally facing network. The objective was to identify security weaknesses, determine their impact, and provide remediation recommendations.</p>
+<h2 id="approach">Approach</h2>
+<p>The test was conducted using a <strong>black-box approach</strong> from <strong>January 16, 2025, 10:14 PM, to January 21, 2025, 4:16 AM</strong>, without credentials or prior knowledge of the internal environment. The goal was to uncover unknown vulnerabilities while maintaining a non-evasive testing approach.</p>
+<h2 id="scope">Scope</h2>
+<ul>
+<li><strong>Network IP:</strong> <code>10.129.95.154</code></li>
+<li><strong>Domain:</strong> <code>intelligence.htb</code></li>
+</ul>
+<h2 id="assessment-overview-and-key-findings">Assessment Overview and Key Findings</h2>
+<p>The penetration tester successfully compromised the <code>intelligence.htb</code> domain through:</p>
+<ul>
+<li>Web application vulnerabilities</li>
+<li>Credential harvesting</li>
+<li>SMB enumeration</li>
+<li>Active Directory misconfigurations</li>
+<li>Kerberos delegation abuse</li>
+</ul>
+<h2 id="key-findings">Key Findings</h2>
+<h3 id="web-application-vulnerability">Web Application Vulnerability</h3>
+<ul>
+<li>Predictable naming conventions exposed sensitive data, leading to the discovery of a <strong>default password</strong>.</li>
+</ul>
+<h3 id="password-spray-attack">Password Spray Attack</h3>
+<ul>
+<li>The default password led to the compromise of the <strong>Tiffany.molina</strong> account via SMB access.</li>
+</ul>
+<h3 id="sensitive-file-discovery">Sensitive File Discovery</h3>
+<ul>
+<li>SMB enumeration revealed a <strong>PowerShell script</strong> (privileged operation of <code>Ted.graves</code>).</li>
+<li>Located <code>user.txt</code> in Tiffany&rsquo;s home directory.</li>
+</ul>
+<h3 id="dns-misconfiguration">DNS Misconfiguration</h3>
+<ul>
+<li>Used the PowerShell script to create a <strong>DNS entry</strong> and capture <strong>Ted.graves&rsquo; NTLMv2 hash</strong>, which was cracked offline.</li>
+</ul>
+<h3 id="active-directory-misconfigurations">Active Directory Misconfigurations</h3>
+<ul>
+<li><strong>ReadGMSAPassword abuse</strong> on <code>svc_int$</code>, allowing retrieval of the <strong>gMSA NTLM hash</strong>.</li>
+<li>The <code>svc_int$</code> account had <strong>AllowedToDelegate</strong> enabled, permitting impersonation of <strong>domain administrator</strong>.</li>
+</ul>
+<h3 id="privilege-escalation-via-kerberos-delegation">Privilege Escalation via Kerberos Delegation</h3>
+<ul>
+<li>Using the <strong>gMSA hash</strong> and <strong>AllowedToDelegate</strong>, the tester <strong>forged a Kerberos service ticket</strong> with <code>impacket-getST</code>, gaining <strong>administrative access</strong> to the domain controller.</li>
+</ul>
+<h2 id="recommendations">Recommendations</h2>
+<h3 id="web-application-security">Web Application Security</h3>
+<ul>
+<li>Implement <strong>input validation</strong> and avoid predictable naming conventions.</li>
+<li><strong>Remove default credentials</strong> from publicly accessible systems.</li>
+<li><strong>Conduct regular security audits</strong> to identify vulnerabilities.</li>
+</ul>
+<h3 id="credential-security">Credential Security</h3>
+<ul>
+<li>Enforce <strong>strong password policies</strong> and <strong>regular rotations</strong>.</li>
+<li>Monitor and limit <strong>login attempts</strong> to detect password spray attacks.</li>
+<li>Enable <strong>Multi-Factor Authentication (MFA)</strong> for privileged accounts.</li>
+</ul>
+<h3 id="smb-security">SMB Security</h3>
+<ul>
+<li>Restrict <strong>SMB share permissions</strong> to <strong>least privilege</strong>.</li>
+<li>Audit SMB share access to detect unauthorized activity.</li>
+</ul>
+<h3 id="active-directory-hardening">Active Directory Hardening</h3>
+<ul>
+<li><strong>Review delegation settings</strong> and transition to <strong>resource-based delegation (RBCD)</strong>.</li>
+<li>Secure <strong>gMSA accounts</strong> by restricting <code>ReadGMSAPassword</code> permissions.</li>
+<li>Regularly audit <strong>privileged group memberships</strong>.</li>
+</ul>
+<h3 id="kerberos--ntlm-protections">Kerberos &amp; NTLM Protections</h3>
+<ul>
+<li>Disable <strong>NTLMv2</strong> where possible and enforce <strong>Kerberos authentication</strong>.</li>
+<li>Remove <strong>unconstrained delegation</strong> and limit <code>AllowedToDelegate</code> usage.</li>
+<li>Enable <strong>Kerberos policy settings</strong> to prevent delegation abuse.</li>
+</ul>
+<h3 id="logging--monitoring">Logging &amp; Monitoring</h3>
+<ul>
+<li>Enable <strong>DNS logging</strong> to track unauthorized modifications.</li>
+<li>Implement <strong>SIEM solutions</strong> to detect authentication anomalies.</li>
+<li>Use <strong>BloodHound</strong> for continuous risk assessment and privilege escalation tracking.</li>
+</ul>
+<h2 id="internal-network-compromise-walkthrough">Internal Network Compromise Walkthrough</h2>
+<p>The tester successfully compromised the internal network and gained <strong>full administrative control</strong> over the <code>intelligence.htb</code> Active Directory domain. Below are the detailed steps taken:</p>
+<h3 id="step-1-initial-access-via-web-application">Step 1: Initial Access via Web Application</h3>
+<ul>
+<li><strong>Port 80</strong> hosted a publicly accessible website with a <strong>predictable naming convention</strong>.</li>
+<li>A <strong>Python script</strong> was created to fuzz for similar names, revealing a <strong>default password</strong>.</li>
+</ul>
+<h3 id="step-2-password-spray--smb-enumeration">Step 2: Password Spray &amp; SMB Enumeration</h3>
+<ul>
+<li>Used <strong><code>netexec</code></strong> to perform a <strong>password spray attack</strong>, gaining access to <strong>Tiffany.molina</strong>.</li>
+<li><strong>SMB enumeration</strong> with <code>smbmap</code> revealed:
+<ul>
+<li><code>IT</code> and <code>Users</code> shares with <strong>read access</strong>.</li>
+<li>A <strong>PowerShell script</strong> in the <code>IT</code> share (privileged operation of <code>Ted.graves</code>).</li>
+<li><code>user.txt</code> flag in Tiffany’s home directory.</li>
+</ul>
+</li>
+</ul>
+<h3 id="step-3-dns-enumeration--ntlm-capture">Step 3: DNS Enumeration &amp; NTLM Capture</h3>
+<ul>
+<li>The <strong>PowerShell script</strong> was used to query DNS entries starting with <code>Web*</code>.</li>
+<li>Created a <strong>malicious DNS entry</strong> and used <strong>Responder</strong> to capture <strong>Ted.graves&rsquo; NTLMv2 hash</strong>.</li>
+<li>Cracked the hash offline using <strong>hashcat</strong>.</li>
+</ul>
+<h3 id="step-4-active-directory-enumeration--exploitation">Step 4: Active Directory Enumeration &amp; Exploitation</h3>
+<ul>
+<li><strong>BloodHound-Python</strong> was used to gather AD information.</li>
+<li>Found that <strong>Ted.graves</strong> belonged to <strong>ITSupport</strong>, which had <strong>ReadGMSAPassword</strong> on <code>svc_int$</code>.</li>
+<li>Used <strong>gMSADumper</strong> to retrieve the <strong>NTLM hash of svc_int$</strong>.</li>
+</ul>
+<h3 id="step-5-kerberos-delegation-abuse--domain-admin-compromise">Step 5: Kerberos Delegation Abuse &amp; Domain Admin Compromise</h3>
+<ul>
+<li><code>svc_int$</code> had <strong>AllowedToDelegate</strong> enabled.</li>
+<li>Used <code>impacket-getST</code> to <strong>forge a Kerberos service ticket</strong> and impersonate <strong>Administrator</strong>.</li>
+<li>Gained <strong>full domain controller access</strong>.</li>
+</ul>
+<hr>
+<p>This write-up details the successful compromise of <code>intelligence.htb</code> and provides actionable security recommendations to prevent future exploitation.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

