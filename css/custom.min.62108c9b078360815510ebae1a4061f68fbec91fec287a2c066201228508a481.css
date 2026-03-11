@@ -1,0 +1,1 @@
+.exploited::before{content:"✅";color:green;display:inline-block;width:1em;height:1em;line-height:1em;text-align:center;border-radius:50%;background-color:#fff;border:1px solid #ccc}

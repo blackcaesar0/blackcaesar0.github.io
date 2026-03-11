@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cyber security blog</title>
+    <link>https://blackcaesar0.com/</link>
+    <description>Recent content on Cyber security blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 03 Jun 2025 22:03:01 +0100</lastBuildDate>
+    <atom:link href="https://blackcaesar0.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Monteverde</title>
+      <link>https://blackcaesar0.com/hackthebox/monteverde/</link>
+      <pubDate>Tue, 03 Jun 2025 22:03:01 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/monteverde/</guid>
+      <description>HTB Monteverde Date: June 3, 2025 Tester: blackcaesar0 Team: The Offensive Security Initiative (OSI) Target IP: 10.129.228.111 Domain: MEGABANK.LOCAL Hostname: MONTEVERDE&#xA;Initial Reconnaissance Nmap scan to identify open ports and services:&#xA;[Jun 03, 2025 - 01:42:17 (UTC)] exegol-HTB Monteverde # nmap -A -O -T4 -Pn -oX Monteverde.xml 10.129.228.111 Starting Nmap 7.93 ( https://nmap.org ) at 2025-06-03 01:43 UTC Nmap scan report for 10.129.228.111 Host is up (0.093s latency). Not shown: 989 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-06-03 01:43:47Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: MEGABANK.</description>
+    </item>
+    <item>
+      <title>Support</title>
+      <link>https://blackcaesar0.com/hackthebox/support/</link>
+      <pubDate>Tue, 20 May 2025 02:36:30 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/support/</guid>
+      <description>HackTheBox: Support Author: blackcaesar0 Team: Offensive Security Initiative (OSI) Machine: Support Difficulty: Easy OS: Windows Category: Active Directory, Privilege Escalation&#xA;Overview Target: support.htb, dc.support.htb Objective: gain user and administrator access Techniques: SMB and LDAP enumeration, .NET reverse engineering with dnSpy, WinRM shell access, GenericAll abuse, Resource-Based Constrained Delegation (RBCD), Kerberos ticket impersonation Initial Enumeration Nmap Scan PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2025-05-19 20:41:54Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: support.</description>
+    </item>
+    <item>
+      <title>Cronos</title>
+      <link>https://blackcaesar0.com/hackthebox/cronos/</link>
+      <pubDate>Wed, 23 Apr 2025 04:15:47 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/cronos/</guid>
+      <description>Internal Penetration Test Report: Cronos Summary Author: blackcaesar0 Team: OSI Machine: Cronos Difficulty: Medium Assessment Date: April 23, 2025 Assessment Window: 02:15 AM – 02:59 AM Assessment Type: Black-box Scope: Internal (simulated corporate environment) Executive Summary The test targeted the Cronos machine on HackTheBox, simulating an external attacker with no prior access or credentials.&#xA;Key findings:&#xA;DNS Zone Transfer — misconfigured DNS allowed unauthorized zone transfers, exposing internal subdomains. SQL Injection — admin login portal susceptible to SQL injection, enabling authentication bypass.</description>
+    </item>
+    <item>
+      <title>Cerberus</title>
+      <link>https://blackcaesar0.com/hackthebox/cerberus/</link>
+      <pubDate>Wed, 26 Feb 2025 05:04:43 +0000</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/cerberus/</guid>
+      <description>Penetration Testing Report: Cerberus Prepared by: blackcaesar0/SYN Date: 2/25/2025&#xA;Executive Summary Purpose This penetration test assessed the security posture of the Cerberus target by identifying and exploiting vulnerabilities across network services, web applications, and Active Directory. The test covered enumeration, exploitation, privilege escalation, and post-exploitation.&#xA;Scope Targets: 10.129.229.4, icinga.cerberus.local, dc.cerberus.local No DoS/DDoS — availability must not be impacted. Testing is limited to the assigned machine. Key Findings Finding Name Severity Impact Remediation Summary Path Traversal in Icinga Web High Credential extraction Restrict access &amp;amp; update Remote Code Execution via Web High Full system compromise Patch affected components Privilege Escalation (Firejail) Critical Root access Update Firejail or remove SUID Kerberos Cached Credentials High Lateral movement Secure Kerberos authentication SAML Authentication Bypass Critical Compromise AD authentication Fix SAML implementation Security posture: the system has multiple critical vulnerabilities allowing full compromise.</description>
+    </item>
+    <item>
+      <title>StreamIO</title>
+      <link>https://blackcaesar0.com/hackthebox/streamio/</link>
+      <pubDate>Fri, 21 Feb 2025 06:43:05 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/streamio/</guid>
+      <description>Penetration Testing Report: StreamIO.htb Prepared by: blackcaesar0/SYN&#xA;Executive Summary This test covers the security of streamio.htb, targeting SQL injection, file inclusion vulnerabilities, and privilege escalation.&#xA;Target: streamio.htb, watch.streamio.htb IP: 10.129.141.95 OS: Windows Server Methodology: Enumeration, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting Key findings: SQL injection in search.php, RFI leading to command execution, privilege escalation via LAPS misconfiguration, and Firefox profile credential dumping.&#xA;Enumeration Used nmap and wfuzz for directory and vhost enumeration.</description>
+    </item>
+    <item>
+      <title>OnlyHacks</title>
+      <link>https://blackcaesar0.com/hackthebox/onlyhacks/</link>
+      <pubDate>Mon, 17 Feb 2025 15:41:14 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/onlyhacks/</guid>
+      <description>Overview A cross-site scripting vulnerability in a dating web application (Tinder-style) where users chat after matching. The flaw is in the chat endpoint — it fails to sanitize inputs, allowing injection of an external JavaScript file to steal session cookies, read user chats, and retrieve a sensitive flag from DMs.&#xA;Vulnerability The payload executes in the victim&amp;rsquo;s browser and sends their session cookie to an attacker-controlled server. With the stolen cookie, the attacker can hijack the session, access private chats, and extract sensitive data.</description>
+    </item>
+    <item>
+      <title>Timelapse</title>
+      <link>https://blackcaesar0.com/hackthebox/timelapse/</link>
+      <pubDate>Tue, 11 Feb 2025 06:16:11 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/timelapse/</guid>
+      <description>Penetration Testing Report: Timelapse Scope IP Domain 10.129.227.113 timelapse.htb / dc01.timelapse.htb Methodology Reconnaissance — enumeration of open ports, services, and domains. Exploitation — gaining initial access through identified vulnerabilities. Privilege Escalation — escalating to administrative access. Post-Exploitation — enumerating the environment and identifying misconfigurations. Findings Reconnaissance Full port scan revealed:&#xA;DNS (53/tcp) — Active Directory domain controller. Kerberos (88/tcp) — authentication. LDAP (389/tcp, 636/tcp, 3268/tcp, 3269/tcp) — Active Directory LDAP. SMB (445/tcp) — guest access enabled.</description>
+    </item>
+    <item>
+      <title>Jailbreak-CTF</title>
+      <link>https://blackcaesar0.com/hackthebox/jailbreak_ctf/</link>
+      <pubDate>Fri, 07 Feb 2025 22:53:43 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/jailbreak_ctf/</guid>
+      <description>CTF Report: XXE in Firmware Update Endpoint Overview A vulnerability was found in the firmware update functionality of a web application. The affected endpoint /api/update accepts XML input. By exploiting an XXE vulnerability, it was possible to read arbitrary files from the server.&#xA;Vulnerable Endpoint Method: POST Endpoint: /api/update Host: 94.237.52.137:31190 Content-Type: application/xml Legitimate request:&#xA;POST /api/update HTTP/1.1 Host: 94.237.52.137:31190 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0 Accept: */* Content-Type: application/xml &amp;lt;FirmwareUpdateConfig&amp;gt; &amp;lt;Firmware&amp;gt; &amp;lt;Version&amp;gt;1.</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>https://blackcaesar0.com/about/</link>
+      <pubDate>Thu, 06 Feb 2025 06:40:16 +0100</pubDate>
+      <guid>https://blackcaesar0.com/about/</guid>
+      <description>I&amp;rsquo;m blackcaesar0, a penetration tester working across the full offensive security stack: Windows and Linux privilege escalation, web application attacks, Active Directory exploitation, and full network compromise including pro lab environments.&#xA;Outside of CTFs and pro labs, I build my own labs. Spinning up AD environments, configuring vulnerable services, and recreating real attack scenarios to go deeper than any platform allows.&#xA;This blog is where I document that work. Writeups from HackTheBox, CTF competitions, and pro labs, broken down technically the way I actually approached them.</description>
+    </item>
+    <item>
+      <title>Intelligence</title>
+      <link>https://blackcaesar0.com/hackthebox/intelligence/</link>
+      <pubDate>Thu, 06 Feb 2025 06:19:49 +0100</pubDate>
+      <guid>https://blackcaesar0.com/hackthebox/intelligence/</guid>
+      <description>Intelligence CTF Write-Up Executive Summary blackcaesar0 performed a network penetration test against intelligence.htb, targeting a simulated internal network. Black-box approach, January 16 to January 21, 2025. No credentials or prior knowledge of the environment.&#xA;Network IP: 10.129.95.154 Domain: intelligence.htb Key Findings Web Application: predictable naming conventions exposed sensitive data, leading to discovery of a default password.&#xA;Password Spray: default password compromised the Tiffany.molina account via SMB.&#xA;Sensitive File Discovery: SMB enumeration revealed a PowerShell script running privileged operations as Ted.</description>
+    </item>
+  </channel>
+</rss>

